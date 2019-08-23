@@ -32,7 +32,7 @@ import matplotlib.pyplot as plt
 #import multiprocessing
 
 import sys
-sys.path.append(r'G:\My Drive\Davis\Research\Python\MicaSense\imageprocessing-master')
+sys.path.append(r'C:\Users\BAE User\Box\Digital Ag Lab\Codes\micasense_AliMoghimi')
 #import micasense.imageset as imageset
 import micasense.capture as capture
 #from micasense.image import Image
@@ -47,7 +47,7 @@ class Irradiance_correction_by_panel():
     """
     a coefficient is calculated for irradiance correction based on the actual reflectance of panel
     """
-    def __init__(self, panel_path, capture_mode = 'manual'):
+    def __init__(self, panel_path, panel_detection_mode = 'default', panel_capture_mode = 'manual'):
         self.panel_path = panel_path
 #        self.dls_correction = None
         self.panel_radiances = []
@@ -68,7 +68,7 @@ class Irradiance_correction_by_panel():
             raise RuntimeError("Only one set of panel image, inlcuding five bands, should be provided. Check the panel folder")
             
         if len(panel_names) == 0:
-            raise IOError("No files (*.tiff) provided. Check the path to panel folder")
+            raise IOError("No files (*.tif) provided. Check the path to panel folder")
         
         self.panel_names = panel_names
         
@@ -77,12 +77,12 @@ class Irradiance_correction_by_panel():
         self.panel_corners = None
         
         
-        if capture_mode == 'manual':
+        if panel_detection_mode == 'default':
             self.panel_corners = self.corners()
-        elif capture_mode == 'drone':
-            self.panel_corners = self.my_corners_func(capture_mode)
+        elif panel_detection_mode == 'my_func':
+            self.panel_corners = self.my_corners_func(panel_capture_mode)
         else:
-            raise IOError('capture mode should be either "manual" or "drone"')
+            raise IOError('panel detection mode should be either "default" or "my_func"')
             
        
 # -------------- Segmenting panels by capture class ---------------------------    
@@ -96,7 +96,7 @@ class Irradiance_correction_by_panel():
 
 #-------------- Segmenting panels by my function (panel_segmentation) -------            
     def my_corners_func(self, mode):
-        panel_corners = panel_segmentation(self.panel_path, capture_mode = mode)
+        panel_corners = panel_segmentation(self.panel_path, panel_capture_mode = mode)
         self.panel_corners = panel_corners
 #        self.cap.panelCorners = panel_corners
         self.cap.set_panelCorners(panel_corners)
@@ -181,8 +181,15 @@ class Irradiance_correction_by_panel():
             self.center_wavelengths.append(img.center_wavelength)
     
    
-    def radiance_to_reflectance(self):
-        self.coef_in_situ()
+    def radiance_to_reflectance(self, coef_in_situ=None):
+        
+        if coef_in_situ is None:
+            self.coef_in_situ()
+        else:
+            self.dn_to_radiance()
+            self.dls_correction()
+            self.dls_correction_coeff = coef_in_situ
+           
         self.cap.undistorted_reflectance(irradiance_list=self.dls_irradiances * self.dls_correction_coeff)
         self.mean_panel_reflectance = self.cap.panel_reflectance()
         

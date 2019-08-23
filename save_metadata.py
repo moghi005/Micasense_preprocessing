@@ -13,8 +13,7 @@ import builtins
 
 
 
-header = "ImagePath,\
-ImageName,\
+header = "ImageName,\
 Latitude (decimal degrees),Longitude (decimal degrees),Altitude_ASL,\
 Roll (degrees), Pitch (degrees), Yaw (decimal degrees),\
 Gian, Exposure, FNumber,\
@@ -23,8 +22,19 @@ GPSLatitude,GpsLatitudeRef,\
 GPSLongitude,GPSLongitudeRef,\
 GPSAltitude,GPSAltitudeRef,\
 FocalLength,\
-XResolution,YResolution,ResolutionUnits\n"
+ImagePath\n"
 
+#header = "ImageName,\
+#Latitude (decimal degrees),Longitude (decimal degrees),Altitude_ASL,\
+#Roll (degrees), Pitch (degrees), Yaw (decimal degrees),\
+#Gian, Exposure, FNumber,\
+#GPSDateStamp,GPSTimeStamp,\
+#GPSLatitude,GpsLatitudeRef,\
+#GPSLongitude,GPSLongitudeRef,\
+#GPSAltitude,GPSAltitudeRef,\
+#FocalLength,\
+#XResolution,YResolution,ResolutionUnits,\
+#ImagePath\n"
 
 hdr_envi = {} 
 
@@ -42,7 +52,10 @@ class saveMetadata():
         self.cap = cap
         self.outputPath = outputPath
         
-    def save_metadata_pix4D(self):
+    def save_metadata_pix4D(self, csv_path=None):
+        
+        if csv_path is None:
+            csv_path = self.outputPath
         
         lat,lon,alt = self.cap.location()
     
@@ -56,42 +69,48 @@ class saveMetadata():
         if londeg < 0:
             londeg = -londeg
             londir = 'West'
-        resolution = self.cap.images[0].focal_plane_resolution_px_per_mm
+            
+#        resolution = self.cap.images[0].focal_plane_resolution_px_per_mm
+        
+        for band in range(len(self.cap.images)):
+#        linestr = '"{}",'.format(self.cap.images[0].meta.get_item("File:FileName")[0:-6]) # remove '_1.tif'
+            linestr = '"{}",'.format(self.cap.images[band].meta.get_item("File:FileName")) 
     
-        linestr = '"{}",'.format(self.outputPath)
-        linestr += '"{}",'.format(self.cap.images[0].meta.get_item("File:FileName")[0:-6]) # remove '_1.tif'
+            
+            linestr += '"{}",'.format(lat)
+            linestr += '"{}",'.format(lon)
+            linestr += '"{}",'.format(alt)
+            
+            linestr += '"{}",'.format(self.cap.images[band].meta.get_item("XMP:Roll"))
+            linestr += '"{}",'.format(self.cap.images[band].meta.get_item("XMP:Pitch"))
+            linestr += '"{}",'.format(self.cap.images[band].meta.get_item("XMP:Yaw"))
+            
+            linestr += '"{}",'.format(self.cap.images[band].meta.get_item("XMP:Gain"))
+            linestr += '"{}",'.format(self.cap.images[band].meta.get_item("XMP:Exposure"))
+            linestr += '"{}",'.format(self.cap.images[band].meta.get_item("EXIF:FNumber"))
         
-        linestr += '"{}",'.format(lat)
-        linestr += '"{}",'.format(lon)
-        linestr += '"{}",'.format(alt)
+            linestr += self.cap.utc_time().strftime("%Y:%m:%d,%H:%M:%S,")
+            linestr += '"{:d} deg {:d}\' {:.2f}"" {}",{},'.format(int(latdeg),int(latmin),latsec,latdir[0],latdir)
+            linestr += '"{:d} deg {:d}\' {:.2f}"" {}",{},{:.1f}, Above Sea Level (m),'.format(int(londeg),int(lonmin),lonsec,londir[0],londir,alt)
+            linestr += '{:.2f},'.format(self.cap.images[band].focal_length)
+#            linestr += '{},{},mm,'.format(resolution,resolution)
+                    
+            linestr += '"{}",'.format(self.outputPath)
+            linestr += '\n' # when writing in text mode, the write command will convert to os.linesep
+            
+            lines.append(linestr)
         
-        linestr += '"{}",'.format(self.cap.images[0].meta.get_item("XMP:Roll"))
-        linestr += '"{}",'.format(self.cap.images[0].meta.get_item("XMP:Pitch"))
-        linestr += '"{}",'.format(self.cap.images[0].meta.get_item("XMP:Yaw"))
-        
-        linestr += '"{}",'.format(self.cap.images[0].meta.get_item("XMP:Gain"))
-        linestr += '"{}",'.format(self.cap.images[0].meta.get_item("XMP:Exposure"))
-        linestr += '"{}",'.format(self.cap.images[0].meta.get_item("EXIF:FNumber"))
-    
-        linestr += self.cap.utc_time().strftime("%Y:%m:%d,%H:%M:%S,")
-        linestr += '"{:d} deg {:d}\' {:.2f}"" {}",{},'.format(int(latdeg),int(latmin),latsec,latdir[0],latdir)
-        linestr += '"{:d} deg {:d}\' {:.2f}"" {}",{},{:.1f} m Above Sea Level,Above Sea Level,'.format(int(londeg),int(lonmin),lonsec,londir[0],londir,alt)
-        linestr += '{}'.format(self.cap.images[0].focal_length)
-        linestr += '{},{},mm'.format(resolution,resolution)
-        linestr += '\n' # when writing in text mode, the write command will convert to os.linesep
-        lines.append(linestr)
-    
-        fullCsvPath = os.path.join(self.outputPath,'Pix4D.csv')
-        with open(fullCsvPath, 'w') as csvfile: #create CSV
-            csvfile.writelines(lines)    
-        
+            fullCsvPath = os.path.join(csv_path,'Pix4D.csv')
+            with open(fullCsvPath, 'w') as csvfile: #create CSV
+                csvfile.writelines(lines)    
+            
     def save_metadata_envi(self):
             
 #            hdr_envi['ENVI'] = 'ENVI'
             hdr_envi['sensor type'] = 'Micasense RedEdge'
             im_name = self.cap.images[0].meta.get_item("File:FileName")[0:-6]
             hdr_envi['image name'] = im_name 
-            hdr_envi['interleave'] = 'bsq'
+            hdr_envi['interleave'] = 'tif'
             hdr_envi['samples'] = self.cap.images[0].meta.get_item("EXIF:ImageWidth")
             hdr_envi['lines'] = self.cap.images[0].meta.get_item("EXIF:ImageHeight")
             hdr_envi['bands'] = int(5) 

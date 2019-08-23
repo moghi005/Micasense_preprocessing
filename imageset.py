@@ -96,7 +96,8 @@ class ImageSet(object):
             'imageName',
             'latitude','longitude','altitude',
             'capture_id',
-            'dls-yaw','dls-pitch','dls-roll'
+            'dls-yaw','dls-pitch','dls-roll',
+            'imu_yaw', 'imu_pitch', 'imu_roll'
         ]
         irr = ["irr-{}".format(wve) for wve in self.captures[0].center_wavelengths()]
         columns += irr
@@ -110,7 +111,11 @@ class ImageSet(object):
             uuid = cap.uuid
             dls_pose = list(cap.dls_pose())
             irr = cap.dls_irradiance()
-            row = [dat]+[image_name]+loc+[uuid]+dls_pose+irr
+            yaw = float(meta['XMP:IrradianceYaw'])
+            pitch = float(meta['XMP:IrradiancePitch'])
+            roll = float(meta['XMP:IrradianceRoll'])
+            imu_pose = [yaw, pitch, roll]
+            row = [dat]+[image_name]+loc+[uuid]+dls_pose+imu_pose+irr
             data.append(row)
         return data, columns
 

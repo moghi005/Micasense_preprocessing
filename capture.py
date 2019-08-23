@@ -389,7 +389,7 @@ class Capture(object):
     
 # ====================>>> My function to save the stacked images as GeoTiff <<<=========================
         
-    def save_capture_as_stack_gtif(self, outfilename, flight_alt):
+    def save_capture_as_stack_gtif(self, outfilename, flight_alt, generateIndividualBands = True):
         from osgeo.gdal import GetDriverByName, GDT_Float64
         import osr
         
@@ -437,17 +437,18 @@ class Capture(object):
             outband.FlushCache()
             
             #------------------------------------------------------------------
-            head, tail = os.path.split(outfilename)
-            path_for_bands = os.path.join(head,'..','individual_bands')
-            if not os.path.exists(path_for_bands):
-                os.makedirs(path_for_bands)
-            name_no_suffix = tail[0:-4]
-            path_to_save= path_for_bands + '\\' + name_no_suffix + '_' + str(i+1) + '.tif'
-#            band_im = self.images[i]
-#            band_ref = band_im.reflectance()
-#            band_ref[band_ref<0] = 0
-#            band_ref[band_ref>1] = 1
-            imageio.imwrite(path_to_save, (outdata).astype('float32'))
+            if generateIndividualBands:
+                head, tail = os.path.split(outfilename)
+                path_for_bands = os.path.join(head,'..','individual_bands')
+                if not os.path.exists(path_for_bands):
+                    os.makedirs(path_for_bands)
+                name_no_suffix = tail[0:-4]
+                path_to_save= path_for_bands + '\\' + name_no_suffix + '_' + str(i+1) + '.tif'
+    #            band_im = self.images[i]
+    #            band_ref = band_im.reflectance()
+    #            band_ref[band_ref<0] = 0
+    #            band_ref[band_ref>1] = 1
+                imageio.imwrite(path_to_save, (outdata).astype('float32'))
             #------------------------------------------------------------------
 
         if bands == 6:
@@ -462,7 +463,7 @@ class Capture(object):
 # =============================================================================
 
         
-    def save_capture_as_stack(self, outfilename):
+    def save_capture_as_stack(self, outfilename, generateIndividualBands = True):
         from osgeo.gdal import GetDriverByName, GDT_UInt16, GDT_Float64
         if self.__aligned_capture is None:
             raise RuntimeError("call Capture.create_aligned_capture prior to saving as stack")
@@ -485,17 +486,18 @@ class Capture(object):
             outband.FlushCache()
             
             #------------------------------------------------------------------
-            head, tail = os.path.split(outfilename)
-            path_for_bands = os.path.join(head,'..','individual_bands')
-            if not os.path.exists(path_for_bands):
-                os.makedirs(path_for_bands)
-            name_no_suffix = tail[0:-4]
-            path_to_save= path_for_bands + '\\' + name_no_suffix + '_' + str(i+1) + '.tif'
-#            band_im = self.images[i]
-#            band_ref = band_im.reflectance()
-#            band_ref[band_ref<0] = 0
-#            band_ref[band_ref>1] = 1
-            imageio.imwrite(path_to_save, (outdata).astype('float32'))
+            if generateIndividualBands:
+                head, tail = os.path.split(outfilename)
+                path_for_bands = os.path.join(head,'..','individual_bands')
+                if not os.path.exists(path_for_bands):
+                    os.makedirs(path_for_bands)
+                name_no_suffix = tail[0:-4]
+                path_to_save= path_for_bands + '\\' + name_no_suffix + '_' + str(i+1) + '.tif'
+    #            band_im = self.images[i]
+    #            band_ref = band_im.reflectance()
+    #            band_ref[band_ref<0] = 0
+    #            band_ref[band_ref>1] = 1
+                imageio.imwrite(path_to_save, (outdata).astype('float32'))
             #------------------------------------------------------------------
 
         if bands == 6:

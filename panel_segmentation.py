@@ -11,8 +11,8 @@ email:	amoghimi@ucdavis.edu
             
             'capture_mode' refers to the way images were captured. 
             
-                capture_mode = 'manual' -- If the images were captured manually (taking drone by hand), the way Micasense recommend. 
-                capture_mode = 'drone' --  If the images were captured while the drone was flying over the panel. 
+                panel_capture_mode = 'manual' -- If the images were captured manually (taking drone by hand), the way Micasense recommend. 
+                Panel_capture_mode = 'drone' --  If the images were captured while the drone was flying over the panel. 
                 
                 
             *** 
@@ -33,7 +33,7 @@ import skimage
 
 # from skimage import morphology
 
-def panel_segmentation(image_path, capture_mode = 'manual'):
+def panel_segmentation(panel_path, panel_capture_mode = 'manual'):
     
     """ segments the panel from the background"""
     
@@ -43,22 +43,22 @@ def panel_segmentation(image_path, capture_mode = 'manual'):
     
     panel_corners = []
 	
-    if capture_mode == 'manual':
+    if panel_capture_mode == 'manual':
         area_threshold_min = 15000
-        area_threshold_max = 50000
+        area_threshold_max = 70000
         ratio_threshold = 0.95
         buffer = 3
 	
-    elif capture_mode == 'drone':
+    elif panel_capture_mode == 'drone':
         area_threshold_min = 100
         area_threshold_max = 5000
         ratio_threshold = 0.95
         buffer = 5
     else:
-        print('ERROR: capture mode should be either "manual" or "drone"')
+        print('ERROR: panel capture mode should be either "manual" or "drone"')
 
     
-    image_names = [f for f in sorted(glob.glob(image_path + "**/*.tif", recursive=True))]
+    image_names = [f for f in sorted(glob.glob(panel_path + "**/*.tif", recursive=True))]
 
     for band in range(len(image_names)):
 
@@ -162,7 +162,7 @@ def panel_segmentation(image_path, capture_mode = 'manual'):
         
        # if the image was taken from an altitude (not from the ground), then Atso algorithm might detect the margins of the panel
        # to remove those mixed pixels at the margins of the panel, we can do this: 
-        if capture_mode == 'drone':
+        if panel_capture_mode == 'drone':
             j_top_left_corner = j_top_left_corner + buffer
             i_top_left_corner = i_top_left_corner + buffer
             width = width - (2*buffer)
