@@ -48,11 +48,9 @@ def pre_processing(image_path,
                    generateIndividualBands = True,
                    overwrite = False,
                    envi_metadata = True,
-                   pix4D_metadata = True):
+                   pix4D_metadata = True,
+                   save_json = True):
 
-#    panel_path = r'C:\Ali\test_micasense_pipeline\Tarp\panel'
-#    image_path = r'C:\Ali\test_micasense_pipeline\Tarp\Tarp_panel'
-    #flight_alt = 60
     
     # In[]
     
@@ -67,12 +65,12 @@ def pre_processing(image_path,
     # In[]
     # ------------ setting the folders for saving the outputs ---------------------
     
-    outputPath = os.path.join(image_path,'..','stacks')
-    if not os.path.exists(outputPath):
-        os.makedirs(outputPath)
+    outputPath_for_stacked = os.path.join(image_path,'..','stacks')
+    if not os.path.exists(outputPath_for_stacked):
+        os.makedirs(outputPath_for_stacked)
     
     if generateThumbnails:
-        thumbnailPath = os.path.join(outputPath, '..', 'thumbnails')
+        thumbnailPath = os.path.join(outputPath_for_stacked, '..', 'thumbnails')
         if not os.path.exists(thumbnailPath):
             os.makedirs(thumbnailPath)
     
@@ -135,7 +133,7 @@ def pre_processing(image_path,
     # -------------- convert the imagelist to Panda data frame --------------------
     
     data, columns = imlist.as_nested_lists()
-    df = pd.DataFrame.from_records(data, index='imageName', columns=columns)
+    df = pd.DataFrame.from_records(data, index='capture_id', columns=columns)
     df['altitude'] = flight_alt 
     
 #    print("in total {} set of images were loaded.".format())
@@ -165,16 +163,22 @@ def pre_processing(image_path,
         report.write(out_string)
         
     # In[ ]:
+    # saves df as a geojson so we can use QGIS/ArcGIS to open the captured  images as points with the properties defined in 'column' variable 
     
-    
-    
-    #from mapboxgl.utils import df_to_geojson
-    #geojson_data = df_to_geojson(df,columns[2:],lat='latitude',lon='longitude')
-    #
-    ## Save out geojson data so we can open the image capture locations in our GIS
-    #with open(os.path.join(outputPath,'imageSet.json'),'w') as f:
-    #    f.write(str(geojson_data))
+    if save_json:
         
+        path_for_json = os.path.join(outputPath_for_stacked,'..','json')
+        if not os.path.exists(path_for_json):
+            os.makedirs(path_for_json)
+        from mapboxgl.utils import df_to_geojson
+        geojson_data = df_to_geojson(df,lat='latitude',lon='longitude')
+    
+        with open(os.path.join(path_for_json,'imageSet.json'),'w') as f:
+            f.write(str(geojson_data))
+     
+    # In[ ]:
+    
+    
     #try:
     #    irradiance = panel_irradiance+[0]
     #except NameError:
@@ -198,17 +202,17 @@ def pre_processing(image_path,
         image_name = image_name_blue[0:-6] # remove '_1.tif'
         outputFilename = image_name+'.tif'
         
-        fullOutputPath = os.path.join(outputPath, outputFilename)
+        full_outputPath_for_stacked = os.path.join(outputPath_for_stacked, outputFilename)
         
-        if (not os.path.exists(fullOutputPath)) or overwrite:
+        if (not os.path.exists(full_outputPath_for_stacked)) or overwrite:
             if(len(cap.images) == len(imlist.captures[0].images)):
                 irradiance = dls_coef * cap.dls_irradiance()
                 cap.create_aligned_capture(irradiance_list=irradiance, warp_matrices = warp_matrices) # convert to reflectance
                 
                 if save_as_geotiff:
-                    cap.save_capture_as_stack_gtif(fullOutputPath, flight_alt, generateIndividualBands=generateIndividualBands)
+                    cap.save_capture_as_stack_gtif(full_outputPath_for_stacked, flight_alt, generateIndividualBands=generateIndividualBands)
                 else:
-                    cap.save_capture_as_stack(fullOutputPath, generateIndividualBands=generateIndividualBands)
+                    cap.save_capture_as_stack(full_outputPath_for_stacked, generateIndividualBands=generateIndividualBands)
                 
                 if generateThumbnails:
                     thumbnailFilename = image_name + '.jpg'
@@ -218,7 +222,9 @@ def pre_processing(image_path,
     
         # save Metadata
       
-        save_meta = saveMetadata(cap, outputPath)
+        save_meta = saveMetadata(cap, outputPath_for_stacked)
+        save_meta.save_metadata_pix4D(outputPath_for_stacked, mode = 'stack')
+        
         if envi_metadata:
             save_meta.save_metadata_envi()
         if pix4D_metadata:
@@ -226,7 +232,7 @@ def pre_processing(image_path,
             csv_path = os.path.join(head_csv,'individual_bands')
             if not os.path.exists(csv_path):
                 os.makedirs(csv_path)
-            save_meta.save_metadata_pix4D(csv_path)
+            save_meta.save_metadata_pix4D(csv_path, mode = 'individual')
             
     #    update_f2(float(i)/float(len(imgset.captures)))
     #update_f2(1.0)
@@ -242,7 +248,7 @@ def pre_processing(image_path,
 #import subprocess
 #
 #old_dir = os.getcwd()
-#os.chdir(outputPath)
+#os.chdir( outputPath_for_stacked)
 #cmd = 'exiftool -csv="{}" -overwrite_original .'.format(fullCsvPath)
 #print(cmd)
 #try:

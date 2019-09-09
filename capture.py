@@ -477,7 +477,13 @@ class Capture(object):
             raise IOError("could not load gdal GeoTiff driver")
         for i in range(0,5):
             outband = outRaster.GetRasterBand(i+1)
-            outdata = self.__aligned_capture[:,:,i]
+            if i == 3: # replace NIR and RedEdge
+                outdata = self.__aligned_capture[:,:,4]
+            elif i == 4:
+                outdata = self.__aligned_capture[:,:,3]
+            else:
+                outdata = self.__aligned_capture[:,:,i]
+                
             outdata[outdata<0] = 0
 #            outdata[outdata>2] = 2   #limit reflectance data to 200% to allow some specular reflections
 #            outband.WriteArray(outdata*32768) # scale reflectance images so 100% = 32768

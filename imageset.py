@@ -106,7 +106,7 @@ class ImageSet(object):
             dat = cap.utc_time()
             meta_obj = cap.images[0].meta
             meta = meta_obj.get_all()
-            image_name = meta['File:FileName']
+            image_name = meta['File:FileName'][0:-6]+ '.tif'
             loc = list(cap.location())
             uuid = cap.uuid
             dls_pose = list(cap.dls_pose())

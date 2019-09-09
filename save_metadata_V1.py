@@ -11,18 +11,45 @@ import os
 import micasense.capture as capture
 import builtins
 
-header = "image name,\
-GPSLatitude,\
-GPSLongitude,\
-GPSAltitude,\
- ,\
-yaw,\
-pitch,\
-roll,\
+header = "SourceFile,\
+GPSDateStamp,GPSTimeStamp,\
+GPSLatitude,GpsLatitudeRef,\
+GPSLongitude,GPSLongitudeRef,\
+GPSAltitude,GPSAltitudeRef,\
 FocalLength,\
-Band\n"
+BandName\n"
 
+#header = "SourceFile,\
+#GPSDateStamp,GPSTimeStamp,\
+#GPSLatitude,GpsLatitudeRef,\
+#GPSLongitude,GPSLongitudeRef,\
+#GPSAltitude,GPSAltitudeRef,\
+#FocalLength,\
+#XResolution,YResolution,ResolutionUnits,\
+#BandName\n"
 
+#header = "SourceFile,\
+#ImageName,\
+#Latitude (decimal degrees),Longitude (decimal degrees),Altitude_ASL,\
+#Roll (degrees), Pitch (degrees), Yaw (decimal degrees),\
+#Gian, Exposure, FNumber,\
+#GPSDateStamp,GPSTimeStamp,\
+#GPSLatitude,GpsLatitudeRef,\
+#GPSLongitude,GPSLongitudeRef,\
+#GPSAltitude,GPSAltitudeRef,\
+#FocalLength\n"
+
+#header = "ImageName,\
+#Latitude (decimal degrees),Longitude (decimal degrees),Altitude_ASL,\
+#Roll (degrees), Pitch (degrees), Yaw (decimal degrees),\
+#Gian, Exposure, FNumber,\
+#GPSDateStamp,GPSTimeStamp,\
+#GPSLatitude,GpsLatitudeRef,\
+#GPSLongitude,GPSLongitudeRef,\
+#GPSAltitude,GPSAltitudeRef,\
+#FocalLength,\
+#XResolution,YResolution,ResolutionUnits,\
+#ImagePath\n"
 
 hdr_envi = {} 
 
@@ -66,16 +93,15 @@ class saveMetadata():
             for band in range(len(self.cap.images)):
                 
                 im_name = self.cap.images[band].meta.get_item("File:FileName")
-                linestr = '"{}",'.format(im_name)
+                source_file = os.path.join(csv_path, im_name)
+                linestr = '"{}",'.format(source_file)
                 
-                linestr += '{},'.format(lat)
-                linestr += '{},'.format(lon)
-                linestr += '{},'.format(alt)
-                linestr += '{},'.format('') # add a blanck column so Pix4D won't read yaw/pitch/roll 
-                linestr += '{},'.format(self.cap.images[band].meta.get_item("XMP:IrradianceYaw"))
-                linestr += '{},'.format(self.cap.images[band].meta.get_item("XMP:IrradiancePitch"))
-                linestr += '{},'.format(self.cap.images[band].meta.get_item("XMP:IrradianceRoll"))
+                linestr += self.cap.utc_time().strftime("%Y:%m:%d,%H:%M:%S,")
+                linestr += '"{:d} deg {:d}\' {:.2f}"" {}",{},'.format(int(latdeg),int(latmin),latsec,latdir[0],latdir)
+                linestr += '"{:d} deg {:d}\' {:.2f}"" {}",{},{:.1f} m Above Sea Level,Above Sea Level,'.format(int(londeg),int(lonmin),lonsec,londir[0],londir,alt)
                 linestr += '{},'.format(self.cap.images[band].focal_length)
+#                linestr += '{},{},mm,'.format(resolution,resolution)
+                
                 band_name = self.cap.images[band].meta.get_item("XMP:BandName")
                 linestr += '{}'.format(band_name)
             
@@ -88,50 +114,46 @@ class saveMetadata():
                     csvfile.writelines(lines) 
                     
                     
-#                import subprocess
-#                
-#                old_dir = os.getcwd()
-#                os.chdir(csv_path)
-#                cmd = 'exiftool -csv="{}" -overwrite_original .'.format(fullCsvPath)
-#    #            print(cmd)
-#                try:
-#                    subprocess.check_call(cmd)
-#                finally:
-#                    os.chdir(old_dir) 
+                import subprocess
+                
+                old_dir = os.getcwd()
+                os.chdir(csv_path)
+                cmd = 'exiftool -csv="{}" -overwrite_original .'.format(fullCsvPath)
+    #            print(cmd)
+                try:
+                    subprocess.check_call(cmd)
+                finally:
+                    os.chdir(old_dir) 
                     
         if mode == 'stack':
             
             im_name = self.cap.images[0].meta.get_item("File:FileName")[0:-6] + '.tif'
-            linestr = '"{}",'.format(im_name)
+            source_file = os.path.join(csv_path, im_name)
+            linestr = '"{}",'.format(source_file)
             
-            linestr += '{},'.format(lat)
-            linestr += '{},'.format(lon)
-            linestr += '{},'.format(alt)
-            linestr += '{},'.format('') # add a blanck column so Pix4D won't read yaw/pitch/roll 
-            linestr += '{},'.format(self.cap.images[0].meta.get_item("XMP:IrradianceYaw"))
-            linestr += '{},'.format(self.cap.images[0].meta.get_item("XMP:IrradiancePitch"))
-            linestr += '{},'.format(self.cap.images[0].meta.get_item("XMP:IrradianceRoll"))
+            linestr += self.cap.utc_time().strftime("%Y:%m:%d,%H:%M:%S,")
+            linestr += '"{:d} deg {:d}\' {:.2f}"" {}",{},'.format(int(latdeg),int(latmin),latsec,latdir[0],latdir)
+            linestr += '"{:d} deg {:d}\' {:.2f}"" {}",{},{:.1f} m Above Sea Level,Above Sea Level,'.format(int(londeg),int(lonmin),lonsec,londir[0],londir,alt)
             linestr += '{},'.format(self.cap.images[0].focal_length)
-            linestr += '{}'.format('5 stacked bands')
-            
+#            linestr += '{},{},mm'.format(resolution,resolution)
             linestr += '\n' # when writing in text mode, the write command will convert to os.linesep
             liens_stack.append(linestr)
-                
+            
             fullCsvPath = os.path.join(csv_path,'Pix4D_stack.csv')
             with open(fullCsvPath, 'w') as csvfile: #create CSV
                 csvfile.writelines(liens_stack) 
                 
                 
-#            import subprocess
-#            
-#            old_dir = os.getcwd()
-#            os.chdir(csv_path)
-#            cmd = 'exiftool -csv="{}" -overwrite_original .'.format(fullCsvPath)
-##            print(cmd)
-#            try:
-#                subprocess.check_call(cmd)
-#            finally:
-#                os.chdir(old_dir) 
+            import subprocess
+            
+            old_dir = os.getcwd()
+            os.chdir(csv_path)
+            cmd = 'exiftool -csv="{}" -overwrite_original .'.format(fullCsvPath)
+#            print(cmd)
+            try:
+                subprocess.check_call(cmd)
+            finally:
+                os.chdir(old_dir) 
             
 #
 #        linestr = '"{}",'.format(self.cap.images[0].meta.get_item("File:FileName")[0:-6]) # remove '_1.tif'
@@ -184,8 +206,8 @@ class saveMetadata():
             hdr_envi['yaw'] = self.cap.images[0].meta.get_item("XMP:Yaw")
             hdr_envi['byte order'] = int(0)
             hdr_envi['header offset'] = int(0)
-            hdr_envi['wavelength'] = [475, 560, 668, 717, 840]
-            hdr_envi['fwhm'] = [20, 20, 10, 10, 40]
+            hdr_envi['wavelength'] = [475, 560, 668, 840, 717]
+            hdr_envi['fwhm'] = [20, 20, 10, 40, 10]
             
             name_with_extension = im_name + '.hdr'
             name_to_save = os.path.join(self.outputPath, name_with_extension)

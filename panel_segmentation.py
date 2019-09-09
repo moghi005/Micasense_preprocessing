@@ -178,8 +178,12 @@ def panel_segmentation(panel_path, panel_capture_mode = 'manual'):
         panel_corners.append([top_left_corner, top_right_corner, bottom_right_corner, bottom_left_corner])
 
         #       cv2.imshow('img', img4)
+        
+        # uncomment to see the results as a figure
         cv2.rectangle(img4, (j_top_left_corner, i_top_left_corner),
                       (j_top_left_corner + width, i_top_left_corner + height), (0, 0, 255), 2)
+        
+        
         #       cv2.waitKey(0)
         #       cv2.destroyAllWindows()
 
