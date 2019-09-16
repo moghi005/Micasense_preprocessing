@@ -1,0 +1,112 @@
+<?xpacket begin="﻿" id="W5M0MpCehiHzreSzNTczkc9d"?>
+<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="XMP Core 4.4.0">
+   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <rdf:Description rdf:about="Pix4D Camera Information"
+            xmlns:Camera="http://pix4d.com/camera/1.0">
+         <Camera:RigName>RedEdge</Camera:RigName>
+         <Camera:BandName>Blue</Camera:BandName>
+         <Camera:CentralWavelength>475</Camera:CentralWavelength>
+         <Camera:WavelengthFWHM>20</Camera:WavelengthFWHM>
+         <Camera:ModelType>perspective</Camera:ModelType>
+         <Camera:PrincipalPoint>2.4504,1.72844</Camera:PrincipalPoint>
+         <Camera:PerspectiveFocalLength>5.4340953749999992</Camera:PerspectiveFocalLength>
+         <Camera:PerspectiveFocalLengthUnits>mm</Camera:PerspectiveFocalLengthUnits>
+         <Camera:PerspectiveDistortion>
+            <rdf:Seq>
+               <rdf:li>-0.099132429999999994</rdf:li>
+               <rdf:li>0.14956849999999999</rdf:li>
+               <rdf:li>-0.048702410000000002</rdf:li>
+               <rdf:li>-4.7397010000000001e-05</rdf:li>
+               <rdf:li>0.00072204439999999995</rdf:li>
+            </rdf:Seq>
+         </Camera:PerspectiveDistortion>
+         <Camera:VignettingCenter>
+            <rdf:Seq>
+               <rdf:li>670.53470000000004</rdf:li>
+               <rdf:li>482.78769999999997</rdf:li>
+            </rdf:Seq>
+         </Camera:VignettingCenter>
+         <Camera:VignettingPolynomial>
+            <rdf:Seq>
+               <rdf:li>-0.00013672700000000001</rdf:li>
+               <rdf:li>1.9632990000000001e-06</rdf:li>
+               <rdf:li>-1.3935920000000001e-08</rdf:li>
+               <rdf:li>3.8044170000000002e-11</rdf:li>
+               <rdf:li>-4.6091050000000003e-14</rdf:li>
+               <rdf:li>2.0220920000000003e-17</rdf:li>
+            </rdf:Seq>
+         </Camera:VignettingPolynomial>
+         <Camera:BandSensitivity>0.27909467561576679</Camera:BandSensitivity>
+         <Camera:RigRelatives>-0.077651, -0.103659, -0.093122</Camera:RigRelatives>
+         <Camera:RigCameraIndex>0</Camera:RigCameraIndex>
+         <Camera:IrradianceExposureTime>0.10100000351667404</Camera:IrradianceExposureTime>
+         <Camera:IrradianceGain>16</Camera:IrradianceGain>
+         <Camera:Irradiance>1.3576668500900269</Camera:Irradiance>
+         <Camera:IrradianceYaw>-176.87037033818629</Camera:IrradianceYaw>
+         <Camera:IrradiancePitch>-18.896837227709739</Camera:IrradiancePitch>
+         <Camera:IrradianceRoll>5.1543457305272566</Camera:IrradianceRoll>
+      </rdf:Description>
+      <rdf:Description rdf:about="Pix4D Camera Information"
+            xmlns:MicaSense="http://micasense.com/MicaSense/1.0/">
+         <MicaSense:BootTimestamp>190</MicaSense:BootTimestamp>
+         <MicaSense:RadiometricCalibration>
+            <rdf:Seq>
+               <rdf:li>0.0001364378</rdf:li>
+               <rdf:li>1.2355820000000001e-07</rdf:li>
+               <rdf:li>2.0261779999999998e-05</rdf:li>
+            </rdf:Seq>
+         </MicaSense:RadiometricCalibration>
+         <MicaSense:FlightId>sTBamUXinAsMTT8yYSw4</MicaSense:FlightId>
+         <MicaSense:CaptureId>96xgBvWSWeW1A3MT8RLg</MicaSense:CaptureId>
+         <MicaSense:TriggerMethod>4</MicaSense:TriggerMethod>
+         <MicaSense:PressureAlt>182.85588073730469</MicaSense:PressureAlt>
+         <MicaSense:DarkRowValue>
+            <rdf:Seq>
+               <rdf:li>4949</rdf:li>
+               <rdf:li>4943</rdf:li>
+               <rdf:li>4918</rdf:li>
+               <rdf:li>4922</rdf:li>
+            </rdf:Seq>
+         </MicaSense:DarkRowValue>
+      </rdf:Description>
+      <rdf:Description rdf:about="Pix4D Camera Information"
+            xmlns:DLS="http://micasense.com/DLS/1.0/">
+         <DLS:Serial>DL03-1711277-SC</DLS:Serial>
+         <DLS:SwVersion>v1.0.1</DLS:SwVersion>
+         <DLS:SensorId>0</DLS:SensorId>
+         <DLS:CenterWavelength>475</DLS:CenterWavelength>
+         <DLS:Bandwidth>20</DLS:Bandwidth>
+         <DLS:TimeStamp>191974</DLS:TimeStamp>
+         <DLS:Exposure>0.10100000351667404</DLS:Exposure>
+         <DLS:Gain>16</DLS:Gain>
+         <DLS:SpectralIrradiance>1.3576668500900269</DLS:SpectralIrradiance>
+         <DLS:RawMeasurement>337</DLS:RawMeasurement>
+         <DLS:OffMeasurement>5236</DLS:OffMeasurement>
+         <DLS:Yaw>-3.0869703116230673</DLS:Yaw>
+         <DLS:Pitch>-0.32981202783697239</DLS:Pitch>
+         <DLS:Roll>0.089960303783813034</DLS:Roll>
+      </rdf:Description>
+   </rdf:RDF>
+</x:xmpmeta>
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                           
+<?xpacket end="w"?>

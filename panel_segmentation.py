@@ -54,6 +54,13 @@ def panel_segmentation(panel_path, panel_capture_mode = 'manual'):
         area_threshold_max = 5000
         ratio_threshold = 0.95
         buffer = 5
+        
+    elif panel_capture_mode == 'altitude'
+        area_threshold_min = 10
+        area_threshold_max = 100
+        ratio_threshold = 0.95
+        buffer = 5
+        
     else:
         print('ERROR: panel capture mode should be either "manual" or "drone"')
 
@@ -65,10 +72,10 @@ def panel_segmentation(panel_path, panel_capture_mode = 'manual'):
 
         # ----------- Reading image ---------------------------------------------------
 
-        img = cv2.imread(image_names[band], 0)  # reading one band at a time
-        #        cv2.imshow('img', img)
-        #        cv2.waitKey()
-        #        cv2.destroyAllWindows()
+        img = cv2.imread(image_names[band], -1)  # reading one band at a time
+#                cv2.imshow('img', img)
+#                cv2.waitKey()
+#                cv2.destroyAllWindows()
 
         # ---------- thresholding - make it binary ------------------------------------
 
