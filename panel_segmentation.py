@@ -55,11 +55,11 @@ def panel_segmentation(panel_path, panel_capture_mode = 'manual'):
         ratio_threshold = 0.95
         buffer = 5
         
-    elif panel_capture_mode == 'altitude'
+    elif panel_capture_mode == 'altitude':
         area_threshold_min = 10
         area_threshold_max = 100
         ratio_threshold = 0.95
-        buffer = 5
+        buffer = 1
         
     else:
         print('ERROR: panel capture mode should be either "manual" or "drone"')
