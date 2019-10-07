@@ -157,7 +157,27 @@ def align(pair):
                 plotutils.plotwithcolorbar(grad2, "match grad level {}".format(level))
                 print("Starting warp for level {} is:\n {}".format(level,warp_matrix))
 
-            cc, warp_matrix = cv2.findTransformECC(grad1, grad2, warp_matrix, warp_mode, criteria)
+            
+            
+# --------------------------------------------------------------------------------------------------------           
+
+#            if
+#            TypeError: findTransformECC() missing required argument 'inputMask' (pos 6)
+#            run the following
+#            
+#            (cc, warp_matrix) = cv2.findTransformECC (im1_gray,im2_gray,warp_matrix, warp_mode, criteria, None, 1)
+#            
+#            inputMask = None is accepted and ignores the inputMask (as it should by default)
+#            
+#            You will then require an extra parameter gaussFiltSize. I set this to 1 but you might explore depending on the input images.
+
+            try:
+                cc, warp_matrix = cv2.findTransformECC(grad1, grad2, warp_matrix, warp_mode, criteria)
+            except TypeError:
+                print("inputMask = None, gaussFileSize = 1")
+                cc, warp_matrix = cv2.findTransformECC(grad1, grad2, warp_matrix, warp_mode, criteria, None, 1)
+                
+# --------------------------------------------------------------------------------------------------------------               
 
             if show_debug_images:
                 print("Warp after alignment level {} is \n{}".format(level,warp_matrix))
