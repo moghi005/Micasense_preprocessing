@@ -208,6 +208,7 @@ def align_capture(capture, ref_index=1, warp_mode=cv2.MOTION_HOMOGRAPHY, max_ite
     MOTION_HOMOGRAPHY sets a homography as a motion model; eight parameters are estimated;`warpMatrix` is 3x3.
     best results will be AFFINE and HOMOGRAPHY, at the expense of speed
     '''
+    
     # Match other bands to this reference image (index into capture.images[])
     ref_img = capture.images[ref_index].undistorted(capture.images[ref_index].radiance()).astype('float32')
     

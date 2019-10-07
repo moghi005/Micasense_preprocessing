@@ -102,8 +102,7 @@ def pre_processing(image_path,
     #for b in range(5):
     #    dls_irr.append(irr_correction.cap.images[b].meta.spectral_irradiance())
     #    dls_pos.append(irr_correction.cap.images[b].meta.dls_pose())
-     
-# In[]:
+     # In[]:
     #---------------- Checking the coef-in-situ by panel images after flight  -------------------
     
     ''' using the dls_coef calculated based on the panel image taken pre flight to calculate the reflectance

@@ -9,8 +9,10 @@ Email: amoghimi@ucdavis.edu
     image_path: Folder path for the images. It can contain several sub folders. 
     
     panel_path_before: it contains the images of the panel captured BEFORE the flight. Only one set of image (5 bands) should be in this folder. 
+                       if you don't provide the path for panels, it will only use DLS data to convert the radiance to reflectance. 
     
-    panel_path_after: it contains the images of the panel captured AFTER the flight. Only one set of image (5 bands) should be in this folder. 
+    panel_path_after: it contains the images of the panel captured AFTER the flight. Only one set of image (5 bands) should be in this folder. This is just
+                      to check if we get the expected reflectance values from the panel after all of the preprocessing steps. 
     
     alignment_mat_path: Folder path for the alignment matrices calculated for various altitudes. 
     
