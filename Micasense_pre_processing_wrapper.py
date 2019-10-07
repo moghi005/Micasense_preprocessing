@@ -37,10 +37,10 @@ from micasense.save_metadata import saveMetadata
 # --------------------------    parameters that user needs to define
 
 def pre_processing(image_path,
-                   panel_path_before,
-                   panel_path_after,
                    alignment_mat_path,
                    flight_alt,
+                   panel_path_before=None,
+                   panel_path_after=None,
                    panel_detection_mode = 'default',
                    panel_capture_mode = 'manual',
                    save_as_geotiff = False,
@@ -60,7 +60,7 @@ def pre_processing(image_path,
 #    alignment_mat_path = r"C:\Users\BAE User\Box\Digital Ag Lab\Codes\micasense_AliMoghimi\alignment_matrix\alignment_micasense_attempt_4_green_pyramid0.pkl"
     pickle_in = open(alignment_mat_path,"rb")
     alignment_micasense = pickle.load(pickle_in)
-    alt_align_mat_measured = [30, 40, 50, 60, 70, 80, 90, 100, 110, 120]
+    alt_align_mat_measured = [15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]
     
     # In[]
     # ------------ setting the folders for saving the outputs ---------------------
@@ -76,13 +76,17 @@ def pre_processing(image_path,
     
     # In[]
     #---------------- correcting the irradiance measured by DLS -------------------
-    irr_correction = correction.Irradiance_correction_by_panel(panel_path_before, panel_detection_mode = panel_detection_mode, panel_capture_mode = panel_capture_mode)
+    if panel_path_before:
+        irr_correction = correction.Irradiance_correction_by_panel(panel_path_before, panel_detection_mode = panel_detection_mode, panel_capture_mode = panel_capture_mode)
+        
+        irr_correction.radiance_to_reflectance()
+        mean_panel_ref = irr_correction.mean_panel_reflectance
+        print('panel reflectance before flight: {}'.format(mean_panel_ref)) # it should match with the actual reflectance of the panel
+        
+        dls_coef = irr_correction.coef_in_situ() 
     
-    irr_correction.radiance_to_reflectance()
-    mean_panel_ref = irr_correction.mean_panel_reflectance
-    print('panel reflectance before flight: {}'.format(mean_panel_ref)) # it should match with the actual reflectance of the panel
-    
-    dls_coef = irr_correction.coef_in_situ() 
+    else:
+        dls_coef = np.array([1, 1, 1, 1, 1]) 
     
     # some optional parameters:
     
@@ -105,24 +109,26 @@ def pre_processing(image_path,
     ''' using the dls_coef calculated based on the panel image taken pre flight to calculate the reflectance
     of the panel image taken post flight - I expect the reflectance of the panel after flight to be close
     to the actual values when we use the dls_coef'''
-    irr_correction_after = correction.Irradiance_correction_by_panel(panel_path_after, panel_detection_mode = panel_detection_mode, panel_capture_mode = panel_capture_mode)
-    irr_correction_after.radiance_to_reflectance(dls_coef)
-    mean_panel_ref_after_with_coef = irr_correction_after.mean_panel_reflectance
-    print('panel reflectance after flight: {}'.format(mean_panel_ref_after_with_coef)) # it should be close to the actual reflectance of the panel
+    
+    if panel_path_after:
+        irr_correction_after = correction.Irradiance_correction_by_panel(panel_path_after, panel_detection_mode = panel_detection_mode, panel_capture_mode = panel_capture_mode)
+        irr_correction_after.radiance_to_reflectance(dls_coef)
+        mean_panel_ref_after_with_coef = irr_correction_after.mean_panel_reflectance
+        print('panel reflectance after flight: {}'.format(mean_panel_ref_after_with_coef)) # it should be close to the actual reflectance of the panel
+            
         
-    
-    ''' if we don't use any in_situ coef (i.e. only use DLS data), then this is the result:'''
-    no_dls_coef = np.array([1, 1, 1, 1, 1])
-    irr_correction_after.radiance_to_reflectance(no_dls_coef)
-    mean_panel_ref_after_no_coef = irr_correction_after.mean_panel_reflectance
-    print('panel reflectance after flight using only DLS data: {}'.format(mean_panel_ref_after_no_coef)) # it should match with the actual reflectance of the panel
-    
-    ''' calculating the in_situ coef based on the panel image taken after flight. I expect these coefficient 
-    to be similar to the dls_coef calculated based on the panel image taken before flight'''
-    irr_correction_after.radiance_to_reflectance()
-    mean_panel_ref_after = irr_correction_after.mean_panel_reflectance
-    print(mean_panel_ref_after) # it should match with the actual reflectance of the panel
-    dls_coef_after = irr_correction_after.coef_in_situ() 
+        ''' if we don't use any in_situ coef (i.e. only use DLS data), then this is the result:'''
+        no_dls_coef = np.array([1, 1, 1, 1, 1])
+        irr_correction_after.radiance_to_reflectance(no_dls_coef)
+        mean_panel_ref_after_no_coef = irr_correction_after.mean_panel_reflectance
+        print('panel reflectance after flight using only DLS data: {}'.format(mean_panel_ref_after_no_coef)) # it should match with the actual reflectance of the panel
+        
+        ''' calculating the in_situ coef based on the panel image taken after flight. I expect these coefficient 
+        to be similar to the dls_coef calculated based on the panel image taken before flight'''
+        irr_correction_after.radiance_to_reflectance()
+        mean_panel_ref_after = irr_correction_after.mean_panel_reflectance
+        print(mean_panel_ref_after) # it should match with the actual reflectance of the panel
+        dls_coef_after = irr_correction_after.coef_in_situ() 
 
     
     # In[]:
@@ -140,6 +146,7 @@ def pre_processing(image_path,
     
     # In[]
     #------------------- save a report for the code ----------------------------
+    
     head_report, tail = os.path.split(image_path)
     outputNameReport = head_report + "\\Report.txt"
     with open(outputNameReport, "w") as report:
@@ -147,15 +154,29 @@ def pre_processing(image_path,
         out_string += 'total number of images: {}'.format(len(df))
         out_string += '\n ----------------------------------------------------'
         out_string += '\n'
-        out_string += '\n'        
-        out_string += 'panel reflectance before flight: {}'.format([round(item, 2) for item in mean_panel_ref])
-        out_string += '\n ----------------------------------------------------'
         out_string += '\n'
-        out_string += '\n'
-        out_string += 'panel reflectance after flight: {}'.format([round(item, 2) for item in mean_panel_ref_after_with_coef])
-        out_string += '\n ----------------------------------------------------'
-        out_string += '\n'
-        out_string += '\n'
+        if panel_path_before:       
+            out_string += 'panel reflectance before flight: {}'.format([round(item, 2) for item in mean_panel_ref])
+            out_string += '\n ----------------------------------------------------'
+            out_string += '\n'
+            out_string += '\n'
+        else:
+            out_string += 'Only DLS data was used for reflectance conversion, no panel was used!'
+            out_string += '\n ----------------------------------------------------'
+            out_string += '\n'
+            out_string += '\n'            
+                
+        if panel_path_after:
+            out_string += 'panel reflectance after flight: {}'.format([round(item, 2) for item in mean_panel_ref_after_with_coef])
+            out_string += '\n ----------------------------------------------------'
+            out_string += '\n'
+            out_string += '\n'
+        else:
+            out_string += 'No panel images captured after the flight were provided by user!'
+            out_string += '\n ----------------------------------------------------'
+            out_string += '\n'
+            out_string += '\n'
+            
         out_string += 'in_situ coeff used for DLS correction: {}'.format([round(item, 3) for item in dls_coef])
         out_string += '\n ----------------------------------------------------'
         out_string += '\n'

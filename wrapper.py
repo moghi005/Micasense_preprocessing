@@ -55,21 +55,21 @@ from micasense.Micasense_pre_processing_wrapper import pre_processing
 
 
 
+image_path = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19-7-18 - Vineyard Matt- Selma - Harvest\Images\MS_Manual\images'
 
-panel_path_before = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19-7-18 - Vineyard Matt- Selma - Harvest\Images\MS\Demo\panel\panel_before'
-panel_path_after = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19-7-18 - Vineyard Matt- Selma - Harvest\Images\MS\Demo\panel\panel_after'
-image_path = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19-7-18 - Vineyard Matt- Selma - Harvest\Images\MS\Demo\images'
-flight_alt = 70 # altitude (in meter) above the ground 
+#panel_path_before = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19-7-18 - Vineyard Matt- Selma - Harvest\Images\MS\Demo\panel\panel_before'
+#panel_path_after = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19-7-18 - Vineyard Matt- Selma - Harvest\Images\MS\Demo\panel\panel_after'
 
 
-alignment_mat_path = r'G:\My Drive\Davis\Research\Python\MicaSense\Alignment Matrix\\alignment_micasense_attempt_4_green_pyramid0.pkl'
+flight_alt = 16 # altitude (in meter) above the ground 
+alignment_mat_path = r'G:\My Drive\Davis\Research\Python\MicaSense\Alignment Matrix\\alignment_micasense_15_120_m.pkl'
     
     
 pre_processing(image_path,
-                   panel_path_before,
-                   panel_path_after,
                    alignment_mat_path,
                    flight_alt,
+                   panel_path_before=None,
+                   panel_path_after=None,
                    panel_detection_mode = 'my_func',
                    panel_capture_mode = 'manual',
                    save_as_geotiff = False,
