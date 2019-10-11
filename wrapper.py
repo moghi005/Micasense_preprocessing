@@ -59,8 +59,8 @@ from micasense.Micasense_pre_processing_wrapper import pre_processing
 
 image_path = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19-7-18 - Vineyard Matt- Selma - Harvest\Images\MS_Manual\images'
 
-#panel_path_before = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19-7-18 - Vineyard Matt- Selma - Harvest\Images\MS\Demo\panel\panel_before'
-#panel_path_after = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19-7-18 - Vineyard Matt- Selma - Harvest\Images\MS\Demo\panel\panel_after'
+panel_path_before = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19-7-18 - Vineyard Matt- Selma - Harvest\Images\MS\Demo\panel\panel_before'
+panel_path_after = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19-7-18 - Vineyard Matt- Selma - Harvest\Images\MS\Demo\panel\panel_after'
 
 
 flight_alt = 16 # altitude (in meter) above the ground 
@@ -70,8 +70,8 @@ alignment_mat_path = r'G:\My Drive\Davis\Research\Python\MicaSense\Alignment Mat
 pre_processing(image_path,
                    alignment_mat_path,
                    flight_alt,
-                   panel_path_before=None,
-                   panel_path_after=None,
+                   panel_path_before=panel_path_before,
+                   panel_path_after=panel_path_after,
                    panel_detection_mode = 'my_func',
                    panel_capture_mode = 'manual',
                    save_as_geotiff = False,
