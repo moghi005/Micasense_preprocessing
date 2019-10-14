@@ -39,6 +39,7 @@ from micasense.save_metadata import saveMetadata
 def pre_processing(image_path,
                    alignment_mat_path,
                    flight_alt,
+                   ground_alt = None, 
                    panel_path_before=None,
                    panel_path_after=None,
                    panel_detection_mode = 'default',
@@ -139,7 +140,7 @@ def pre_processing(image_path,
     
     data, columns = imlist.as_nested_lists()
     df = pd.DataFrame.from_records(data, index='capture_id', columns=columns)
-    df['altitude'] = flight_alt 
+#    df['altitude'] = flight_alt 
     
 #    print("in total {} set of images were loaded.".format())
     
@@ -210,6 +211,10 @@ def pre_processing(image_path,
     
     for i,cap in enumerate(imlist.captures):
         
+        if ground_alt:
+            _,_, alt_above_see = cap.location()
+            flight_alt = alt_above_see - ground_alt
+            
         delta_alt = abs(np.array(alt_align_mat_measured) - flight_alt)
         if np.min(delta_alt) < 5:
             ind = int(np.where(delta_alt==np.min(delta_alt))[0])

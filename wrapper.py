@@ -18,6 +18,9 @@ Email: amoghimi@ucdavis.edu
     
     flight_alt: the above ground altitude (in meter) at which the UAV flew. 
     
+    ground_alt: define the altitude of the ground above the sea level - the algorithm subtract the altitude read my GPS from teh ground alt to calculate the flight alt
+                use this only if you flew manually and it was hard for the pilot to keep the flight alt consistent. 
+    
     panel_detection_mode: There are two options:
                 •	‘default’ which is the Micasense algorithm for panel detection using the QR code. 
                 •	‘my_func’ which is the algorithm I developed for panel detection. It saves a binary mask for panel per each band in the same folder for panel.
@@ -57,19 +60,21 @@ from micasense.Micasense_pre_processing_wrapper import pre_processing
 
 
 
-image_path = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19-7-18 - Vineyard Matt- Selma - Harvest\Images\MS_Manual\images'
+image_path = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19_5_8_vineyard_matt_selma_bloom\Images\MS - Manual Flight\images\test\images'
 
-panel_path_before = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19-7-18 - Vineyard Matt- Selma - Harvest\Images\MS\Demo\panel\panel_before'
-panel_path_after = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19-7-18 - Vineyard Matt- Selma - Harvest\Images\MS\Demo\panel\panel_after'
+panel_path_before = None
+panel_path_after = None
 
 
-flight_alt = 16 # altitude (in meter) above the ground 
+flight_alt = 16 # altitude (in meter) above the ground level
+ground_alt = 91 # altitude of the ground level (in meter) above the sea level 
 alignment_mat_path = r'G:\My Drive\Davis\Research\Python\MicaSense\Alignment Matrix\\alignment_micasense_15_120_m.pkl'
     
     
 pre_processing(image_path,
                    alignment_mat_path,
                    flight_alt,
+                   ground_alt = ground_alt,
                    panel_path_before=panel_path_before,
                    panel_path_after=panel_path_after,
                    panel_detection_mode = 'my_func',

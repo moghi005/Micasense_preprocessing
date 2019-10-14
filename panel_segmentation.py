@@ -114,9 +114,9 @@ def panel_segmentation(panel_path, panel_capture_mode = 'manual'):
                 if axis_ratio_obj >= ratio_threshold:
                     reference_panel_mask[label_image == j + 1] = 255  # plus one because of background (it is zero)
 
-               cv2.imshow('img', blur)
-               cv2.waitKey(0)
-               cv2.destroyAllWindows()
+#               cv2.imshow('img', blur)
+#               cv2.waitKey(0)
+#               cv2.destroyAllWindows()
 
         temp_im = reference_panel_mask
         n_row, n_col = temp_im.shape
