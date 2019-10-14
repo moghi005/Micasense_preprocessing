@@ -62,8 +62,13 @@ from micasense.Micasense_pre_processing_wrapper import pre_processing
 
 image_path = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19_5_8_vineyard_matt_selma_bloom\Images\MS - Manual Flight\images\test\images'
 
+<<<<<<< HEAD
 panel_path_before = None
 panel_path_after = None
+=======
+panel_path_before = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19-7-18 - Vineyard Matt- Selma - Harvest\Images\MS\Demo\panel\panel_before'
+panel_path_after = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19-7-18 - Vineyard Matt- Selma - Harvest\Images\MS\Demo\panel\panel_after'
+>>>>>>> e36a5f6571d55fcbf701f81d3817479ad7a7047c
 
 
 flight_alt = 16 # altitude (in meter) above the ground level
@@ -74,7 +79,10 @@ alignment_mat_path = r'G:\My Drive\Davis\Research\Python\MicaSense\Alignment Mat
 pre_processing(image_path,
                    alignment_mat_path,
                    flight_alt,
+<<<<<<< HEAD
                    ground_alt = ground_alt,
+=======
+>>>>>>> e36a5f6571d55fcbf701f81d3817479ad7a7047c
                    panel_path_before=panel_path_before,
                    panel_path_after=panel_path_after,
                    panel_detection_mode = 'my_func',
