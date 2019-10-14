@@ -23,7 +23,6 @@ email:	amoghimi@ucdavis.edu
 """
 
 
-
 import numpy as np
 import cv2
 import glob
@@ -72,7 +71,7 @@ def panel_segmentation(panel_path, panel_capture_mode = 'manual'):
 
         # ----------- Reading image ---------------------------------------------------
 
-        img = cv2.imread(image_names[band], -1)  # reading one band at a time
+        img = cv2.imread(image_names[band], 0)  # reading one band at a time
 #                cv2.imshow('img', img)
 #                cv2.waitKey()
 #                cv2.destroyAllWindows()
@@ -115,9 +114,15 @@ def panel_segmentation(panel_path, panel_capture_mode = 'manual'):
                 if axis_ratio_obj >= ratio_threshold:
                     reference_panel_mask[label_image == j + 1] = 255  # plus one because of background (it is zero)
 
-#               cv2.imshow('img', reference_panel_mask)
+<<<<<<< HEAD
+#               cv2.imshow('img', blur)
 #               cv2.waitKey(0)
 #               cv2.destroyAllWindows()
+=======
+               cv2.imshow('img', blur)
+               cv2.waitKey(0)
+               cv2.destroyAllWindows()
+>>>>>>> e36a5f6571d55fcbf701f81d3817479ad7a7047c
 
         temp_im = reference_panel_mask
         n_row, n_col = temp_im.shape

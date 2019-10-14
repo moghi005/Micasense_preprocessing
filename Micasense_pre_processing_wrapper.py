@@ -39,6 +39,10 @@ from micasense.save_metadata import saveMetadata
 def pre_processing(image_path,
                    alignment_mat_path,
                    flight_alt,
+<<<<<<< HEAD
+=======
+                   ground_alt = None, 
+>>>>>>> ca4a8871477e1d781db42da4620f040695048f63
                    panel_path_before=None,
                    panel_path_after=None,
                    panel_detection_mode = 'default',
@@ -102,8 +106,7 @@ def pre_processing(image_path,
     #for b in range(5):
     #    dls_irr.append(irr_correction.cap.images[b].meta.spectral_irradiance())
     #    dls_pos.append(irr_correction.cap.images[b].meta.dls_pose())
-     
-# In[]:
+     # In[]:
     #---------------- Checking the coef-in-situ by panel images after flight  -------------------
     
     ''' using the dls_coef calculated based on the panel image taken pre flight to calculate the reflectance
@@ -140,7 +143,7 @@ def pre_processing(image_path,
     
     data, columns = imlist.as_nested_lists()
     df = pd.DataFrame.from_records(data, index='capture_id', columns=columns)
-    df['altitude'] = flight_alt 
+#    df['altitude'] = flight_alt 
     
 #    print("in total {} set of images were loaded.".format())
     
@@ -211,6 +214,10 @@ def pre_processing(image_path,
     
     for i,cap in enumerate(imlist.captures):
         
+        if ground_alt:
+            _,_, alt_above_see = cap.location()
+            flight_alt = alt_above_see - ground_alt
+            
         delta_alt = abs(np.array(alt_align_mat_measured) - flight_alt)
         if np.min(delta_alt) < 5:
             ind = int(np.where(delta_alt==np.min(delta_alt))[0])
