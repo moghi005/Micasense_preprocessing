@@ -10,7 +10,7 @@ import micasense.imageset as imageset
 import pandas as pd
 import micasense.metadata as metadata
 
-def reading_metadata(image_folder=None, image_name=None):
+def reading_metadata(image_folder=None, image_name=None, band_name=None):
     
     if image_folder:
         imlist = imageset.ImageSet.from_directory(image_folder)
@@ -21,5 +21,9 @@ def reading_metadata(image_folder=None, image_name=None):
         m = metadata.Metadata(image_name[0])
         meta_file = m.get_all()
     
+    if band_name:
+        m = metadata.Metadata(band_name)
+        meta_file = m.get_all()
+        
     return meta_file
     

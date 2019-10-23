@@ -15,16 +15,16 @@ email:	amoghimi@ucdavis.edu
 
 # -------------------------       importing the required packages 
 
-import sys
+#import sys
 # change this to the folder containing the codes
-sys.path.append(r'G:\My Drive\Davis\Research\Python\MicaSense\imageprocessing-master')
+#sys.path.append(code_path)
 import os
 import numpy as np
 import pandas as pd
 
 import micasense.imageset as imageset
 import micasense.capture as capture
-import micasense.image as image
+#import micasense.image as image
 import micasense.irradiance_correction_by_panel as correction
 from micasense.save_metadata import saveMetadata
 
@@ -39,10 +39,7 @@ from micasense.save_metadata import saveMetadata
 def pre_processing(image_path,
                    alignment_mat_path,
                    flight_alt,
-<<<<<<< HEAD
-=======
                    ground_alt = None, 
->>>>>>> ca4a8871477e1d781db42da4620f040695048f63
                    panel_path_before=None,
                    panel_path_after=None,
                    panel_detection_mode = 'default',
@@ -64,7 +61,7 @@ def pre_processing(image_path,
 #    alignment_mat_path = r"C:\Users\BAE User\Box\Digital Ag Lab\Codes\micasense_AliMoghimi\alignment_matrix\alignment_micasense_attempt_4_green_pyramid0.pkl"
     pickle_in = open(alignment_mat_path,"rb")
     alignment_micasense = pickle.load(pickle_in)
-    alt_align_mat_measured = [15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]
+    alt_align_mat_measured = [10, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]
     
     # In[]
     # ------------ setting the folders for saving the outputs ---------------------

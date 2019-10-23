@@ -53,53 +53,36 @@ Email: amoghimi@ucdavis.edu
 """
 import sys
 # change this to the folder containing the codes
-sys.path.append(r'G:\My Drive\Davis\Research\Python\MicaSense\imageprocessing-master')
-
+code_path = r'G:\My Drive\Davis\Research\Python\MicaSense\imageprocessing-master'
+sys.path.append(code_path)
+import os
 from micasense.Micasense_pre_processing_wrapper import pre_processing
 
 
 
 
-<<<<<<< HEAD
-image_path = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19-7-18 - Vineyard Matt- Selma - Harvest\Images\MS_Manual\images'
-
-#panel_path_before = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19-7-18 - Vineyard Matt- Selma - Harvest\Images\MS\Demo\panel\panel_before'
-#panel_path_after = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19-7-18 - Vineyard Matt- Selma - Harvest\Images\MS\Demo\panel\panel_after'
-
-
-flight_alt = 16 # altitude (in meter) above the ground 
-=======
 image_path = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19_5_8_vineyard_matt_selma_bloom\Images\MS - Manual Flight\images\test\images'
+panel_path_before = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19_5_8_vineyard_matt_selma_bloom\Images\MS - Manual Flight\images\test\panel_before'
+panel_path_after = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19_5_8_vineyard_matt_selma_bloom\Images\MS - Manual Flight\images\test\panel_after'
+flight_alt = None # altitude (in meter) above the ground level
 
-<<<<<<< HEAD
-panel_path_before = None
-panel_path_after = None
-=======
-panel_path_before = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19-7-18 - Vineyard Matt- Selma - Harvest\Images\MS\Demo\panel\panel_before'
-panel_path_after = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19-7-18 - Vineyard Matt- Selma - Harvest\Images\MS\Demo\panel\panel_after'
->>>>>>> e36a5f6571d55fcbf701f81d3817479ad7a7047c
+alignment_mat_path = r'G:\My Drive\Davis\Research\Python\MicaSense\Alignment Matrix\\alignment_micasense_10_120_m.pkl'
 
 
-flight_alt = 16 # altitude (in meter) above the ground level
-ground_alt = 91 # altitude of the ground level (in meter) above the sea level 
->>>>>>> ca4a8871477e1d781db42da4620f040695048f63
-alignment_mat_path = r'G:\My Drive\Davis\Research\Python\MicaSense\Alignment Matrix\\alignment_micasense_15_120_m.pkl'
+if flight_alt is None:
+    band_name = 'plot_1_1.tif' # define the name of an image (band) in the image_path folder
+    band_path = os.path.join(image_path, band_name)
+    size_obj = 0.15 # size of the object along horizon (x direction) in meter
+    FOV = 47.2
+    from micasense.ground_asl import ground_asl
+    ground_alt = ground_asl(band_path, size_obj, FOV) # altitude of the ground (in meter) above the sea level 
     
-    
-pre_processing(image_path,
-                   alignment_mat_path,
-                   flight_alt,
-<<<<<<< HEAD
-                   panel_path_before=None,
-                   panel_path_after=None,
-=======
-<<<<<<< HEAD
+pre_processing(image_path = image_path,
+                   alignment_mat_path = alignment_mat_path ,
+                   flight_alt = flight_alt,
                    ground_alt = ground_alt,
-=======
->>>>>>> e36a5f6571d55fcbf701f81d3817479ad7a7047c
-                   panel_path_before=panel_path_before,
-                   panel_path_after=panel_path_after,
->>>>>>> ca4a8871477e1d781db42da4620f040695048f63
+                   panel_path_before = panel_path_before,
+                   panel_path_after = panel_path_after,
                    panel_detection_mode = 'my_func',
                    panel_capture_mode = 'manual',
                    save_as_geotiff = False,
@@ -107,5 +90,6 @@ pre_processing(image_path,
                    generateIndividualBands = False,
                    overwrite = True,
                    envi_metadata = True,
-                   pix4D_metadata = False,
+                   pix4D_metadata = True,
                    save_json = True)
+    
