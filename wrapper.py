@@ -78,7 +78,7 @@ if flight_alt is None:
     ground_alt = ground_asl(band_path, size_obj, FOV) # altitude of the ground (in meter) above the sea level 
     
 pre_processing(image_path = image_path,
-                   alignment_mat_path = alignment_mat_path ,
+                   alignment_mat_path = alignment_mat_path,
                    flight_alt = flight_alt,
                    ground_alt = ground_alt,
                    panel_path_before = panel_path_before,

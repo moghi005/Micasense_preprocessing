@@ -22,7 +22,7 @@ def ground_asl(band_name, size_obj, FOV):
     n_pixels = roi[2]
     spatial_res = size_obj / n_pixels
     
-    agl_alt = spatial_res * im_width / (2*np.tan( (FOV/2)*np.pi/180 ))
+    agl_alt = (spatial_res * im_width / (2*np.tan( (FOV/2)*np.pi/180 )) ) + 2 # plus 2 because the panel (object) was located about 2 meter above the ground
     
     meta = reading_metadata(image_folder=None, image_name=None, band_name=band_name)
     flight_alt = meta['Composite:GPSAltitude']
