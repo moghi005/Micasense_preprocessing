@@ -61,16 +61,16 @@ from micasense.Micasense_pre_processing_wrapper import pre_processing
 
 
 
-image_path = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19_5_8_vineyard_matt_selma_bloom\Images\MS - Manual Flight\images\test\images'
-panel_path_before = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19_5_8_vineyard_matt_selma_bloom\Images\MS - Manual Flight\images\test\panel_before'
-panel_path_after = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19_5_8_vineyard_matt_selma_bloom\Images\MS - Manual Flight\images\test\panel_after'
+image_path = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Reedley\19_7_16_Reedley_Veraison\Images\MS_Manual\plot_9_debugging\plot_9'
+panel_path_before = None #r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19_5_8_vineyard_matt_selma_bloom\Images\MS - Manual Flight\images\test\panel_before'
+panel_path_after = None #r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19_5_8_vineyard_matt_selma_bloom\Images\MS - Manual Flight\images\test\panel_after'
 flight_alt = None # altitude (in meter) above the ground level
 
 alignment_mat_path = r'G:\My Drive\Davis\Research\Python\MicaSense\Alignment Matrix\\alignment_micasense_10_120_m.pkl'
 
 
 if flight_alt is None:
-    band_name = 'plot_1_1.tif' # define the name of an image (band) in the image_path folder
+    band_name = 'plot_9_1.tif' # define the name of an image (band) in the image_path folder
     band_path = os.path.join(image_path, band_name)
     size_obj = 0.15 # size of the object along horizon (x direction) in meter
     FOV = 47.2
