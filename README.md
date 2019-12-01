@@ -12,9 +12,30 @@ I highly recommend visit [Micasense repository](https://github.com/micasense/ima
 # Features
 Users need to provide several inputs in `wrapper` to start batch processing. These inputs include:
 
-- *alignment_mat_path*: a string variable, it is the path for a pickle file that contains the alignment matrices calculated for various altitudes.
+- *alignment_mat_path*: a string variable, it is the path for a pickle file that contains the alignment matrices calculated for various altitudes. For more information on how to make compute the alignment matrix for each band, please refer to [alignment matrix]() page.
+<!-- ![test](Demo/figures_for_readmefile/alignment_dictionary.png?raw=true "alignment matrices dictionary") -->
+- *flight_alt*: above ground altitude (in meter) at which the UAV flew. This is required to use an appropriate alignment matrix for stacking the bands. if pilot flew manually and it was hard to keep the flight alt consistent so you are not sure about the flight altitude for each image, set `flight_alt = None`. In this case, you need to define *ground_alt* above the sea level, so the algorithm subtracts the altitude read by GPS from the ground alt to calculate the flight alt.
+- *ground_alt*: ground altitude above the sea level. Define this only if you didn't define *flight_alt*. If you don't define *flight_alt* and *ground_alt*, the algorithm has a functionality to calculate ground_alt based on the field of view (FOV) and size of a known object in one of the images (such as panel). In this case, user should define the FOV of the sensor, *size_obj* which refers to the size of a known object along horizon (x direction) in meter. To specify the object, user should provide *band_name* which refers to the name of an image that contains the object, only one band is required. The image is shown and user need to draw a rectangle around the object of interest.  
 - *image_path*: a string variable, it is the path to the folder that contains multispectral images. This folder can contain several sub folders.
 - *panel_path_before*: a string variable, it is the path to the folder that contains the images of the panel captured BEFORE the flight. Only one set of image (5 bands) should be in this folder. If you don't have the panel images before the flight, you can set `panel_path_before = None`, therefore, only DLS data is used to convert the radiance images to reflectance. Alternatively, if you have panel images before the flight, the algorithm uses the panel images to calculate an in-situ factor to correct the irradiance derived from DLS data measured by downwelling sensor over the entire flight for each image set.
 - *panel_path_after*: a string variable, it is the path to the folder that contains the images of the panel captured AFTER the flight. Only one set of image (5 bands) should be in this folder. This is just to check if we get the expected reflectance values from the panel (reflectance values provided by MicaSense for your panel) after applying all the preprocessing steps.
+- *panel_detection_mode*: there are two options:
 
-![test](Demo/figures_for_readmefile/alignment_dictionary.png?raw=true "alignment matrices dictionary")
+        1. ‘default’ which is the Micasense algorithm for panel detection using the QR code.
+        2. ‘my_func’ which is the algorithm I developed for panel detection. It detect the panel and saves a binary mask for panel per each band in the same panel folder (i.e., panel_path_after)
+                o	Pros:
+                    *	Sometimes the default algorithm is not able to detect the panel corners.
+                    *	It can detect the panel even if the panel images were captured by drone from less than about 10 meter altitude.
+                o	Cons:
+                    *	It is slower than the default algorithm.
+    **NOTE**: if you set `panel_capture_mode = 'my_func'`, you need to define *panel_capture_mode*.                 
+- *panel_capture_mode*: if the panel_detection_mode is set to ‘my_func’, then user needs to define whether the panel capture mode was ‘manual’ or ‘drone’.
+        1. In ‘manual’, pilot took the images manually per the instruction provided by Micasense.
+        2. In ‘drone’ mode, pilot captured the images by flying at an altitude less than about 10 meter above the ground.
+- *save_as_geotiff*:  if `True`, this is not active now. But the purpose is to save the stacked images with geotiff format.
+- *generateThumbnails*: if `True`, it stacks red, green, and blue bands and saves a RGB thumbnail (with small size) per each image set.
+- *generateIndividualBands*:  if `True`, it saves individual bands after performing all of the pre-processing.
+- *overwrite*:  if `True`, it overwrites the pre-processed images (stacked, individual bands, and thumbnails) if there is an image with the same name in the corresponding folder.
+- *envi_metadata*: it saves metadata with ENVI format for each multispectral (stacked) image.
+- *pix4D_metadata*:  if `True`, it saves a CSV metadata for all individual bands. This information is required for processing the images (e.g., stitching the images) with Pix4D software.
+- *save_json*: it extracts useful information (such as IMU and DLS data) from image metadata and saves them as a geojson file so we can open the captured images as points in QGIS/ArcGIS.
