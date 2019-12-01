@@ -30,6 +30,7 @@ Users need to provide several inputs in `wrapper` to start batch processing. The
                     *	It is slower than the default algorithm.
     **NOTE**: if you set `panel_capture_mode = 'my_func'`, you need to define *panel_capture_mode*.                 
 - *panel_capture_mode*: if the panel_detection_mode is set to ‘my_func’, then user needs to define whether the panel capture mode was ‘manual’ or ‘drone’.
+
         1. In ‘manual’, pilot took the images manually per the instruction provided by Micasense.
         2. In ‘drone’ mode, pilot captured the images by flying at an altitude less than about 10 meter above the ground.
 - *save_as_geotiff*:  if `True`, this is not active now. But the purpose is to save the stacked images with geotiff format.
