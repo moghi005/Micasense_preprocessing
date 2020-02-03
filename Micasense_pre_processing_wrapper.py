@@ -36,8 +36,9 @@ from micasense.save_metadata import saveMetadata
 
 # --------------------------    parameters that user needs to define
 
-def pre_processing(image_path,
+def pre_processing(
                    alignment_mat_path,
+                   image_path,
                    flight_alt,
                    ground_alt = None, 
                    panel_path_before=None,
@@ -61,8 +62,9 @@ def pre_processing(image_path,
 #    alignment_mat_path = r"C:\Users\BAE User\Box\Digital Ag Lab\Codes\micasense_AliMoghimi\alignment_matrix\alignment_micasense_attempt_4_green_pyramid0.pkl"
     pickle_in = open(alignment_mat_path,"rb")
     alignment_micasense = pickle.load(pickle_in)
-    alt_align_mat_measured = [10, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]
-    
+#    alt_align_mat_measured_1 = [10, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]
+#    alt_align_mat_measured = alignment_micasense['altitude']
+    alt_align_mat_measured = [key for key in alignment_micasense.keys() if isinstance(key, (int, float, complex))]
     # In[]
     # ------------ setting the folders for saving the outputs ---------------------
     

@@ -59,37 +59,39 @@ import os
 from micasense.Micasense_pre_processing_wrapper import pre_processing
 
 
-
-
-image_path = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Reedley\19_7_16_Reedley_Veraison\Images\MS_Manual\plot_9_debugging\plot_9'
-panel_path_before = None #r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19_5_8_vineyard_matt_selma_bloom\Images\MS - Manual Flight\images\test\panel_before'
-panel_path_after = None #r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\Vineyard Matt\2019\Selma\19_5_8_vineyard_matt_selma_bloom\Images\MS - Manual Flight\images\test\panel_after'
-flight_alt = None # altitude (in meter) above the ground level
-
 alignment_mat_path = r'G:\My Drive\Davis\Research\Python\MicaSense\Alignment Matrix\\alignment_micasense_10_120_m.pkl'
 
+image_path = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\RedEdge Camera and DLS Experiments\Radiometric calibration tests\Data\20-1-16 - Experiment 1\citrus_orchard'
+panel_path_before = None #r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\RedEdge Camera and DLS Experiments\Radiometric calibration tests\Data\20-1-16 - Experiment 1\panel_before\Panel_before'
+panel_path_after = None #r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\RedEdge Camera and DLS Experiments\Radiometric calibration tests\Data\20-1-16 - Experiment 1\panel_after\Panel_after'
+flight_alt = 50 # altitude (in meter) above the ground level
+ground_alt = None
 
-if flight_alt is None:
+if flight_alt is None and ground_alt is None:
     band_name = 'plot_9_1.tif' # define the name of an image (band) in the image_path folder
     band_path = os.path.join(image_path, band_name)
     size_obj = 0.15 # size of the object along horizon (x direction) in meter
     FOV = 47.2
     from micasense.ground_asl import ground_asl
     ground_alt = ground_asl(band_path, size_obj, FOV) # altitude of the ground (in meter) above the sea level 
-    
-pre_processing(image_path = image_path,
-                   alignment_mat_path = alignment_mat_path,
-                   flight_alt = flight_alt,
-                   ground_alt = ground_alt,
-                   panel_path_before = panel_path_before,
-                   panel_path_after = panel_path_after,
-                   panel_detection_mode = 'my_func',
-                   panel_capture_mode = 'manual',
-                   save_as_geotiff = False,
-                   generateThumbnails = True,
-                   generateIndividualBands = False,
-                   overwrite = True,
-                   envi_metadata = True,
-                   pix4D_metadata = True,
-                   save_json = True)
+
+panel_detection_mode = 'my_func' # or 'default'
+panel_capture_mode = 'manual'
+
+pre_processing(
+               alignment_mat_path = alignment_mat_path,
+               image_path = image_path,
+               flight_alt = flight_alt,
+               ground_alt = ground_alt,
+               panel_path_before = panel_path_before,
+               panel_path_after = panel_path_after,
+               panel_detection_mode = panel_detection_mode,
+               panel_capture_mode = panel_capture_mode,
+               save_as_geotiff = False,
+               generateThumbnails = True,
+               generateIndividualBands = False,
+               overwrite = True,
+               envi_metadata = True,
+               pix4D_metadata = True,
+               save_json = True)
     
