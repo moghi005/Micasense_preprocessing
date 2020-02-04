@@ -61,11 +61,15 @@ from micasense.Micasense_pre_processing_wrapper import pre_processing
 
 alignment_mat_path = r'G:\My Drive\Davis\Research\Python\MicaSense\Alignment Matrix\\alignment_micasense_10_120_m.pkl'
 
-image_path = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\RedEdge Camera and DLS Experiments\Radiometric calibration tests\Data\20-1-16 - Experiment 1\tarp\tarp_before_after'
-panel_path_before = None #r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\RedEdge Camera and DLS Experiments\Radiometric calibration tests\Data\20-1-16 - Experiment 1\tarp\tarp_before'
-panel_path_after = None #r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\RedEdge Camera and DLS Experiments\Radiometric calibration tests\Data\20-1-16 - Experiment 1\panel_after\Panel_after'
-flight_alt = 10 # altitude (in meter) above the ground level
+image_path = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\RedEdge Camera and DLS Experiments\Radiometric calibration tests\Data\20-1-16 - Experiment 1\citrus_orchard'
+panel_path_before = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\RedEdge Camera and DLS Experiments\Radiometric calibration tests\Data\20-1-16 - Experiment 1\tarp\tarp_before'
+panel_path_after = None # r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\RedEdge Camera and DLS Experiments\Radiometric calibration tests\Data\20-1-16 - Experiment 1\panel_after\Panel_after'
+flight_alt = 50 # altitude (in meter) above the ground level
 ground_alt = None
+
+reference_panel = 'tarp_26' # 'micasense' or 'tarp' 
+panel_detection_mode = 'my_func' # or 'default'
+panel_capture_mode = 'manual'
 
 if flight_alt is None and ground_alt is None:
     band_name = 'plot_9_1.tif' # define the name of an image (band) in the image_path folder
@@ -75,9 +79,7 @@ if flight_alt is None and ground_alt is None:
     from micasense.ground_asl import ground_asl
     ground_alt = ground_asl(band_path, size_obj, FOV) # altitude of the ground (in meter) above the sea level 
 
-reference_panel = 'tarp_26' # 'micasense' or 'tarp' 
-panel_detection_mode = 'my_func' # or 'default'
-panel_capture_mode = 'manual'
+
 
 pre_processing(
                alignment_mat_path = alignment_mat_path,

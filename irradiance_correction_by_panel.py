@@ -122,7 +122,7 @@ class Irradiance_correction_by_panel():
         self.panel_corners = panel_corners
 #        self.cap.panelCorners = panel_corners
         self.cap.set_panelCorners(panel_corners)
-        self.cap.plot_panel_location(self.panel_names, panel_corners)
+#        self.cap.plot_panel_location(self.panel_names, panel_corners)
         return panel_corners
 
     
@@ -147,7 +147,7 @@ class Irradiance_correction_by_panel():
         cv2.destroyAllWindows()
         self.panel_corners = panel_corners
         self.cap.set_panelCorners(panel_corners)
-        self.cap.plot_panel_location(self.panel_names, panel_corners)
+#        self.cap.plot_panel_location(self.panel_names, panel_corners)
         return panel_corners
         
         
