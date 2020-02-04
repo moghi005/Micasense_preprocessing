@@ -32,14 +32,14 @@ import matplotlib.pyplot as plt
 #import multiprocessing
 
 import sys
-sys.path.append(r'C:\Users\BAE User\Box\Digital Ag Lab\Codes\micasense_AliMoghimi')
+sys.path.append(r'G:\My Drive\Davis\Research\Python\MicaSense\imageprocessing-master')
 #import micasense.imageset as imageset
 import micasense.capture as capture
 #from micasense.image import Image
 from micasense.panel import Panel
 import micasense.dls as dls
-
 from micasense.panel_segmentation import panel_segmentation
+import cv2
 
 
 
@@ -47,7 +47,7 @@ class Irradiance_correction_by_panel():
     """
     a coefficient is calculated for irradiance correction based on the actual reflectance of panel
     """
-    def __init__(self, panel_path, panel_detection_mode = 'default', panel_capture_mode = 'manual'):
+    def __init__(self, panel_path, reference_panel = 'micasense', panel_detection_mode = 'default', panel_capture_mode = 'manual'):
         self.panel_path = panel_path
 #        self.dls_correction = None
         self.panel_radiances = []
@@ -58,12 +58,29 @@ class Irradiance_correction_by_panel():
         self.center_wavelengths = []
         self.dls_correction_coeff = []
         self.mean_panel_reflectance = []
-        self.panel_actual_reflectance_by_band = [0.64, 0.65, 0.65, 0.60, 0.64] # Our sensor
         
+        if reference_panel == 'micasense':
+            self.panel_actual_reflectance_by_band = [0.64, 0.65, 0.65, 0.60, 0.64] # Our sensor
+            
+        elif reference_panel == 'tarp_26':
+            self.panel_actual_reflectance_by_band = [0.26, 0.26, 0.26, 0.26, 0.26]
+            
+        elif reference_panel == 'tarp_24':
+            self.panel_actual_reflectance_by_band = [0.24, 0.24, 0.24, 0.24, 0.24]
+            
+        elif reference_panel == 'tarp_12':
+            self.panel_actual_reflectance_by_band = [0.12, 0.12, 0.12, 0.12, 0.12]
+            
+        elif reference_panel == 'tarp_6':
+            self.panel_actual_reflectance_by_band = [0.06, 0.06, 0.06, 0.06, 0.06]
+        else:
+            raise IOError("define reference panel: panel, tarp (26, 24, 12, 6)?")
+            
 # ---------------------- Loading Panels----------------------------------------
+       
         
         panel_names = [f for f in sorted(glob.glob(self.panel_path + "**/*.tif", recursive=True))]
-        
+    
         if len(panel_names) > 5:
             raise RuntimeError("Only one set of panel image, inlcuding five bands, should be provided. Check the panel folder")
             
@@ -76,14 +93,19 @@ class Irradiance_correction_by_panel():
         self.cap = capture.Capture.from_filelist(panel_names)
         self.panel_corners = None
         
-        
-        if panel_detection_mode == 'default':
-            self.panel_corners = self.corners()
-        elif panel_detection_mode == 'my_func':
-            self.panel_corners = self.my_corners_func(panel_capture_mode)
-        else:
-            raise IOError('panel detection mode should be either "default" or "my_func"')
+        if reference_panel == 'micasense':
             
+            if panel_detection_mode == 'default':
+                self.panel_corners = self.corners()
+            elif panel_detection_mode == 'my_func':
+                self.panel_corners = self.my_corners_func(panel_capture_mode)
+            else:
+                raise IOError('panel detection mode should be either "default" or "my_func"')
+
+        else: # it is a tarp
+            self.panel_corners = self.tarp_corners()
+            
+          
        
 # -------------- Segmenting panels by capture class ---------------------------    
         
@@ -106,7 +128,29 @@ class Irradiance_correction_by_panel():
     
     # ---- converting panel image to radiance and extracting
     #       mean, std, num_pixels, num_saturated_pixels using the panel_corners ---
+    
+    def tarp_corners(self):
+        '''asks users to crop a rectangle in the tarp'''
+        panel_corners = []
+        for band in range(len(self.panel_names)):
 
+
+        # ----------- Reading image ---------------------------------------------------
+            img = cv2.imread(self.panel_names[band], 0)
+            # Select ROI: draw a rectangle such that it includes tarp, preferable where there is less shade and ripple (wave)
+            [j_top_left_corner, i_top_left_corner, width, height] = cv2.selectROI(img)
+            top_left_corner = [j_top_left_corner, i_top_left_corner]
+            top_right_corner = [j_top_left_corner+width, i_top_left_corner]
+            bottom_right_corner = [j_top_left_corner+width, i_top_left_corner+height]
+            bottom_left_corner = [j_top_left_corner, i_top_left_corner+height]
+            panel_corners.append([top_left_corner, top_right_corner, bottom_right_corner, bottom_left_corner])
+        cv2.destroyAllWindows()
+        self.panel_corners = panel_corners
+        self.cap.set_panelCorners(panel_corners)
+        self.cap.plot_panel_location(self.panel_names, panel_corners)
+        return panel_corners
+        
+        
     def dn_to_radiance(self):
 #        if self.panel_corners is None:
 #            panel_corners = self.corners()

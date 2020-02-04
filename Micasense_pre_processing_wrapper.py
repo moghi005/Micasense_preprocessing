@@ -43,6 +43,7 @@ def pre_processing(
                    ground_alt = None, 
                    panel_path_before=None,
                    panel_path_after=None,
+                   reference_panel = 'micasense',
                    panel_detection_mode = 'default',
                    panel_capture_mode = 'manual',
                    save_as_geotiff = False,
@@ -80,7 +81,7 @@ def pre_processing(
     # In[]
     #---------------- correcting the irradiance measured by DLS -------------------
     if panel_path_before:
-        irr_correction = correction.Irradiance_correction_by_panel(panel_path_before, panel_detection_mode = panel_detection_mode, panel_capture_mode = panel_capture_mode)
+        irr_correction = correction.Irradiance_correction_by_panel(panel_path_before, reference_panel = reference_panel, panel_detection_mode = panel_detection_mode, panel_capture_mode = panel_capture_mode)
         
         irr_correction.radiance_to_reflectance()
         mean_panel_ref = irr_correction.mean_panel_reflectance
@@ -113,7 +114,7 @@ def pre_processing(
     to the actual values when we use the dls_coef'''
     
     if panel_path_after:
-        irr_correction_after = correction.Irradiance_correction_by_panel(panel_path_after, panel_detection_mode = panel_detection_mode, panel_capture_mode = panel_capture_mode)
+        irr_correction_after = correction.Irradiance_correction_by_panel(panel_path_after, reference_panel = reference_panel, panel_detection_mode = panel_detection_mode, panel_capture_mode = panel_capture_mode)
         irr_correction_after.radiance_to_reflectance(dls_coef)
         mean_panel_ref_after_with_coef = irr_correction_after.mean_panel_reflectance
         print('panel reflectance after flight: {}'.format(mean_panel_ref_after_with_coef)) # it should be close to the actual reflectance of the panel
