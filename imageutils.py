@@ -299,6 +299,37 @@ def aligned_capture(capture, warp_matrices, warp_mode, cropped_dimensions, match
 
     return im_cropped
 
+
+'''---------------------------------------------------------------------'''
+# apply homography to create an aligned stack regardless of the img_type
+
+def my_alignment(capture, warp_matrices, warp_mode, cropped_dimensions, irradiance, interpolation_mode=cv2.INTER_LANCZOS4):
+    
+    width, height = capture.images[0].size()
+
+    im_aligned = np.zeros((height,width,len(warp_matrices)), dtype=np.float32 )
+
+    for i in range(0,len(warp_matrices)):
+        img_raw = capture.images[i].raw()
+        img = (np.pi * img_raw) / irradiance[i] # convert raw (DN) directly to reflectance (radiance conversion is skipped!)
+        
+        if warp_mode != cv2.MOTION_HOMOGRAPHY:
+            im_aligned[:,:,i] = cv2.warpAffine(img,
+                                            warp_matrices[i],
+                                            (width,height),
+                                            flags=interpolation_mode + cv2.WARP_INVERSE_MAP)
+        else:
+            im_aligned[:,:,i] = cv2.warpPerspective(img,
+                                                warp_matrices[i],
+                                                (width,height),
+                                                flags=interpolation_mode + cv2.WARP_INVERSE_MAP)
+    (left, top, w, h) = tuple(int(i) for i in cropped_dimensions)
+    im_cropped = im_aligned[top:top+h, left:left+w][:]
+
+    return im_cropped
+'''-------------------------------------------------------------------------'''
+
+
 class BoundPoint(object):
     def __init__(self, x=0, y=0):
         self.x = x
