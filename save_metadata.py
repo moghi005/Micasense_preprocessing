@@ -177,8 +177,21 @@ class saveMetadata():
             hdr_envi['bit depth'] = self.cap.images[0].meta.get_item("EXIF:BitsPerSample")
             hdr_envi['data type'] = int(5) # float 64
             hdr_envi['shutter'] = self.cap.images[0].meta.get_item("Composite:ShutterSpeed")
-            hdr_envi['expoture'] = self.cap.images[0].meta.get_item("EXIF:ExposureTime")
-            hdr_envi['gain'] = self.cap.images[0].meta.get_item("XMP:Gain")
+#            hdr_envi['gain'] = self.cap.images[0].meta.get_item("XMP:Gain") # this is not the GAIN!!
+            gain = []
+            exposure = []
+            for im in self.cap.images:
+                gain.append(im.meta.get_item('EXIF:ISOSpeed')/100.0)
+                exposure.append(im.meta.get_item("EXIF:ExposureTime"))
+            exp = exposure.copy()
+            gain_ordered = gain.copy()
+            ''' this is because I changed the order of NIR and RedEdge'''
+            gain_ordered[3] = gain[4]
+            gain_ordered[4] = gain[3]
+            exp[3] = exposure[4]
+            exp[4] = exposure[3]
+            hdr_envi['expoture'] = exp
+            hdr_envi['gain'] = gain_ordered
             hdr_envi['roll'] = self.cap.images[0].meta.get_item("XMP:Roll")
             hdr_envi['pitch'] = self.cap.images[0].meta.get_item("XMP:Pitch")
             hdr_envi['yaw'] = self.cap.images[0].meta.get_item("XMP:Yaw")
