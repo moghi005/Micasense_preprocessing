@@ -27,7 +27,6 @@ Irradiance_correction_by_panel Class
 
 import numpy as np
 import glob
-#import os
 import matplotlib.pyplot as plt
 #import multiprocessing
 
@@ -131,7 +130,10 @@ class Irradiance_correction_by_panel():
     
     def tarp_corners(self):
         '''asks users to crop a rectangle in the tarp'''
+        import os
+        import pandas as pd
         panel_corners = []
+        df_list = []
         for band in range(len(self.panel_names)):
 
 
@@ -144,9 +146,24 @@ class Irradiance_correction_by_panel():
             bottom_right_corner = [j_top_left_corner+width, i_top_left_corner+height]
             bottom_left_corner = [j_top_left_corner, i_top_left_corner+height]
             panel_corners.append([top_left_corner, top_right_corner, bottom_right_corner, bottom_left_corner])
+            n_rows, n_cols = img.shape
+            mask = np.zeros((n_rows, n_cols), dtype=np.uint8)
+            mask[i_top_left_corner:i_top_left_corner+height, j_top_left_corner:j_top_left_corner+width] = 255
+            df_list.append([i_top_left_corner, j_top_left_corner, height, width])
+            head, _ = os.path.split(self.panel_names[band])
+            mask_name = 'tarp_mask' + str(band) + '.jpg'
+            filename = os.path.join(head, mask_name)
+            cv2.imwrite(filename, mask)
+        
         cv2.destroyAllWindows()
         self.panel_corners = panel_corners
         self.cap.set_panelCorners(panel_corners)
+        
+        columns = ['i_top_left_corner', 'j_top_left_corner', 'height', 'width']
+        df = pd.DataFrame(df_list, index=None, columns=columns)
+        df_name = 'tarp_coordinates.csv'
+        df_path = os.path.join(head, df_name)
+        df.to_csv(df_path)
 #        self.cap.plot_panel_location(self.panel_names, panel_corners)
         return panel_corners
         
