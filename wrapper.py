@@ -34,6 +34,18 @@ Email: amoghimi@ucdavis.edu
                         In ‘manual’, pilot took the images manually per the instruction provided by Micasense. 
                         In ‘drone’ mode, pilot captured the images by flying at an altitude less than 10 meter above the ground. 
     
+    reference_panel: it can be one of the following options:
+                        * 'micasense':  the algorithm autamatically detec the panel and uses the micasense panel to compute or refine IRRADIANCE. 
+                        * 'tarp_26':    Users need to draw a rectangle of the tarp images for all bands. The algrightm then uses the tarp reflectivity to compute or refine IRRADIANCE. 
+                        * 'tarp_24':    Similar to 'tarp_26', however, the algorithm uses the reflectivity of tarp_24 to compute ir refine IRRADIANCE.
+                        
+    reflectance_convert_mode:  it can be one of the following options:
+                                        * 'panel_dls': using panel before to correct the irradiance of DLS. NOTE: it can be tarp as well. 
+                                        * 'panel':      using only panel to compute irradiance and use the colculated irradiance for reflectance conversion. 
+                                        * 'dls':        using only DLS data for reflectance conversion. NOTE: it is similar to the case when the 'panel_before' is not provided, the algorirthm uses only DLS data.
+                                        
+                                        NOTE: in all cases, DN is first converted to radiance and then to reflectance. 
+                                        
     save_as_geotiff: this is not active now. But the purpose is to save the stacked images with geotiff format.
     
     generateThumbnails: it stacks red, green, and blue bands and saves a RGB thumbnail (with small size) per each image set. 
@@ -61,15 +73,16 @@ from micasense.Micasense_pre_processing_wrapper import pre_processing
 
 alignment_mat_path = r'G:\My Drive\Davis\Research\Python\MicaSense\Alignment Matrix\\alignment_micasense_10_120_m.pkl'
 
-image_path = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\RedEdge Camera and DLS Experiments\Radiometric calibration tests\Data\20-1-16 - Experiment 1\citrus_orchard'
-panel_path_before = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\RedEdge Camera and DLS Experiments\Radiometric calibration tests\Data\20-1-16 - Experiment 1\tarp\tarp_before'
-panel_path_after = None # r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\RedEdge Camera and DLS Experiments\Radiometric calibration tests\Data\20-1-16 - Experiment 1\panel_after\Panel_after'
-flight_alt = 50 # altitude (in meter) above the ground level
-ground_alt = None
-
-reference_panel = 'tarp_26' # 'micasense' or 'tarp' 
-panel_detection_mode = 'my_func' # or 'default'
+image_path = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\RedEdge Camera and DLS Experiments\Radiometric calibration tests\Data\20-2-4 - Experiment 3 - Two Tarps\Reflectance\tarp_26_radiance_ref\tarp_images'
+panel_path_before = r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\RedEdge Camera and DLS Experiments\Radiometric calibration tests\Data\20-2-4 - Experiment 3 - Two Tarps\Reflectance\tarp_26_radiance_ref\tarp_before'
+panel_path_after = None #r'C:\Users\coeadmin-amoghimi\Box\Digital Ag Lab\Aerial\RedEdge Camera and DLS Experiments\Radiometric calibration tests\Data\20-2-4 - Experiment 3 - Two Tarps\panel_after\panel_after'
+flight_alt = 10                     # altitude (in meter) above the ground level
+reference_panel = 'tarp_26'       # 'micasense' or 'tarp_26 or tarp_24' 
+panel_detection_mode = 'my_func'    # or 'default'
 panel_capture_mode = 'manual'
+reflectance_convert_mode = 'panel' # 'panel_dls', or 'panel', or 'dls'
+
+ground_alt = None
 
 if flight_alt is None and ground_alt is None:
     band_name = 'plot_9_1.tif' # define the name of an image (band) in the image_path folder
@@ -91,6 +104,7 @@ pre_processing(
                reference_panel = reference_panel,
                panel_detection_mode = panel_detection_mode,
                panel_capture_mode = panel_capture_mode,
+               reflectance_convert_mode=reflectance_convert_mode,
                save_as_geotiff = False,
                generateThumbnails = True,
                generateIndividualBands = False,
