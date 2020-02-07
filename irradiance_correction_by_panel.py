@@ -179,7 +179,6 @@ class Irradiance_correction_by_panel():
         self.panel_radiances_std = panel_radiances_param[:, 1]
         self.n_panel_pixels = panel_radiances_param[:, 2]
         self.n_saturated_pixels = panel_radiances_param[:, 3]
-        
     
         for elem in self.n_saturated_pixels:
             if elem != 0:
@@ -190,7 +189,9 @@ class Irradiance_correction_by_panel():
             if cv >= 0.03:
                 band_cv = int(np.where(self.panel_radiances_std/self.panel_radiances == cv)[0]) + 1
                 print('WARNING: the coefficient of variation of radiance is {} for panel pixels in band {}.'.format(cv , band_cv))
-
+        
+        return self.panel_radiances
+    
 # ---------------- Computing solar orientation --------------------------------
     
     """ 
