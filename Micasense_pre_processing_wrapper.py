@@ -46,6 +46,7 @@ def pre_processing(
                    reference_panel = 'micasense',
                    panel_detection_mode = 'default',
                    panel_capture_mode = 'manual',
+                   reflectance_convert_mode = 'panel_dls',
                    save_as_geotiff = False,
                    generateThumbnails = True,
                    generateIndividualBands = True,
@@ -80,7 +81,7 @@ def pre_processing(
     
     # In[]
     #---------------- correcting the irradiance measured by DLS -------------------
-    if panel_path_before:
+    if panel_path_before is not None and reflectance_convert_mode != 'dls':
         irr_correction = correction.Irradiance_correction_by_panel(panel_path_before, reference_panel = reference_panel, panel_detection_mode = panel_detection_mode, panel_capture_mode = panel_capture_mode)
         
         irr_correction.radiance_to_reflectance()
@@ -113,7 +114,7 @@ def pre_processing(
     of the panel image taken post flight - I expect the reflectance of the panel after flight to be close
     to the actual values when we use the dls_coef'''
     
-    if panel_path_after:
+    if panel_path_after is not None and reflectance_convert_mode != 'dls':
         irr_correction_after = correction.Irradiance_correction_by_panel(panel_path_after, reference_panel = reference_panel, panel_detection_mode = panel_detection_mode, panel_capture_mode = panel_capture_mode)
         irr_correction_after.radiance_to_reflectance(dls_coef)
         mean_panel_ref_after_with_coef = irr_correction_after.mean_panel_reflectance
@@ -234,7 +235,13 @@ def pre_processing(
         
         if (not os.path.exists(full_outputPath_for_stacked)) or overwrite:
             if(len(cap.images) == len(imlist.captures[0].images)):
-                irradiance = dls_coef * cap.dls_irradiance()
+                
+                if reflectance_convert_mode == 'panel':
+                    panel_radiances = irr_correction.dn_to_radiance() # this is the irradiance calculated based on the radiance reflected from panel and the known reflectance values of the panel
+                    irradiance = np.pi * panel_radiances / irr_correction.panel_actual_reflectance_by_band # this is actual irradiance to the panel
+                else: # using panel + DLS     OR     using DLS only
+                    irradiance = dls_coef * cap.dls_irradiance()
+                
                 cap.create_aligned_capture(irradiance_list=irradiance, warp_matrices = warp_matrices) # convert to reflectance
                 
                 if save_as_geotiff:
