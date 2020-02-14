@@ -44,9 +44,7 @@ Users need to provide several inputs in `wrapper` to start batch processing. The
         * 'panel_dls': using panel images captured before flight to correct the irradiance of DLS. NOTE: it can be  tarp as well.
         * 'panel': using only panel to compute irradiance and use the calculated irradiance for reflectance conversion.
         * 'dls': using only DLS data for reflectance conversion. NOTE: it is similar to the case when the 'panel_before' is not provided, the algorithm uses only DLS data.
-
-        **NOTE**: in all cases, DN is first converted to radiance and then to reflectance.          
-
+   **NOTE**: in all cases, DN is first converted to radiance and then to reflectance.          
 - *save_as_geotiff*:  if `True`, it saves the stacked images with geotiff format. This is not active now. But the purpose is to save the stacked geoTIFF images.
 - *generateThumbnails*: if `True`, it stacks red, green, and blue bands and saves a RGB thumbnail (with small size) per each image set.
 - *generateIndividualBands*:  if `True`, it saves individual bands after performing all of the pre-processing.
