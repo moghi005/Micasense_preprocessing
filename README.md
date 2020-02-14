@@ -38,12 +38,12 @@ Users need to provide several inputs in `wrapper` to start batch processing. The
         * 'tarp_26': In this case, users need to draw a rectangle of the tarp images for all bands. The algorithm then uses the tarp reflectivity to compute or refine IRRADIANCE.
         * 'tarp_24': Similar to 'tarp_26', however, the algorithm uses the reflectivity of tarp_24 to compute or refine IRRADIANCE.
 
--*reflectance_convert_mode*:  it can be one of the following options:
+- *reflectance_convert_mode*:  it can be one of the following options:
         * 'panel_dls': using panel images captured before flight to correct the irradiance of DLS. NOTE: it can be  tarp as well.
         * 'panel': using only panel to compute irradiance and use the calculated irradiance for reflectance conversion.
         * 'dls': using only DLS data for reflectance conversion. NOTE: it is similar to the case when the 'panel_before' is not provided, the algorithm uses only DLS data.
 
-        NOTE: in all cases, DN is first converted to radiance and then to reflectance.         
+        NOTE: in all cases, DN is first converted to radiance and then to reflectance.          
 
 - *save_as_geotiff*:  if `True`, it saves the stacked images with geotiff format. This is not active now. But the purpose is to save the stacked geoTIFF images.
 - *generateThumbnails*: if `True`, it stacks red, green, and blue bands and saves a RGB thumbnail (with small size) per each image set.
